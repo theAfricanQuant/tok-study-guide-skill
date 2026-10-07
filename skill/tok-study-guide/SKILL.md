@@ -10,7 +10,7 @@ Turn whatever the user provides into one self-contained HTML lesson that a compl
 ## Paths and environment (read first)
 
 - **Skill directory (`$SKILL_DIR`)**: the folder containing this `SKILL.md`. All scripts are in `$SKILL_DIR/scripts/`. Run them from anywhere with the full path, e.g. `python3 "$SKILL_DIR/scripts/assemble.py" …` (or `uv run --no-project python …`).
-- **Output folder (`$OUTPUT_DIR`)**: where finished `.html` and `.pdf` files go. Default: `./lesson-output/` in the current project. In the Claude.ai sandbox use `/mnt/user-data/outputs/`.
+- **Output folder (`$OUTPUT_DIR`)**: where the finished `.html` lesson goes; `.pdf` is written here only when explicitly requested. Default: `./lesson-output/` in the current project. In the Claude.ai sandbox use `/mnt/user-data/outputs/`.
 - **Work folder (`$WORK_DIR`)**: scratch space for body parts, transcripts and photos. Default: `./lesson-work/`. In the Claude.ai sandbox use `/home/claude/` and `/tmp/`.
 - **Delivery**: if an Artifact/publish tool exists (Claude.ai), publish the HTML; else if `present_files` exists, present it; otherwise just save it to `$OUTPUT_DIR` and tell the user the path and to open it in a browser.
 - **Python to use**: if `$SKILL_DIR/.venv/bin/python` (Windows: `$SKILL_DIR\.venv\Scripts\python.exe`) exists, run every script with it instead of `python3`; it has all dependencies installed (created by `npx tok-study-guide-skill setup`).
@@ -20,7 +20,7 @@ Turn whatever the user provides into one self-contained HTML lesson that a compl
 
 | Material | How to get the content |
 |---|---|
-| YouTube link or ID | `scripts/fetch_transcript.py` (below). It saves readable transcript text plus a timestamped cue sidecar. If fetching fails, ask for a transcript or usable captions. |
+| YouTube link or ID | `scripts/fetch_transcript.py` (below). It saves readable transcript text plus a timestamped cue sidecar. On access blocks, follow the local-only cookie guidance below or ask for captions. |
 | PDF (article, paper, slides) | If its text is already in context, use it. Otherwise read the `pdf-reading` (or `file-reading`) skill and extract it from the uploads folder (Claude.ai: `/mnt/user-data/uploads/`). |
 | GitHub repo | `git clone --depth 1 <url> "$WORK_DIR/repo"`, then read the README, docs and main code files. |
 | Web article URL | `curl -sL -A "Mozilla/5.0" <url>` and strip tags; if blocked, ask for a PDF or paste. |
@@ -35,6 +35,9 @@ When several materials are given, make **one combined lesson** that flows from b
 python3 "$SKILL_DIR/scripts/fetch_transcript.py" "<url>" --out "$WORK_DIR/<slug>.txt"
 ```
 For YouTube, the script writes readable transcript text, `<out>.timestamps.txt` (caption cues with time anchors), and `<out>.meta.json` (title, channel, URL). Use the readable transcript to understand the argument and the timestamp sidecar to locate and cite spoken moments. A transcript does not show what is on screen: inspect a relevant video moment or supplied frame when a visual matters, and never claim to have seen a visual you could not access.
+
+#### When YouTube blocks transcript access
+The fetcher tries several player clients, then an unauthenticated API fallback. If YouTube blocks the current runtime, ask for a transcript or captions. If the user explicitly chooses local browser authentication, use `--cookies-from-browser` only when this script is running on that user's trusted machine. A local `--cookies <file>` option is also available for a private cookie file. Never ask for or accept an uploaded, pasted, emailed, or committed logged-in cookie jar; these cookies grant account access. Do not access a browser profile without explicit user direction. Cookie values must never be logged or forwarded to the API fallback. Keep TLS certificate verification enabled; configure a trusted CA if the local network intercepts TLS.
 
 Read each source fully, using ~40,000-character chunks for long transcripts. Keep a compact **source ledger** as you read: assign each source an ID (`V1`, `P1`, `R1`), record its type/title/link, note its main ideas, and capture precise anchors. Use timestamps for videos, page numbers for PDFs, headings for articles, slide numbers for decks, and file/symbol/line or notebook section/cell for code. Mark conflicts or gaps instead of silently blending them. Correct caption-garbled names only when confident.
 
@@ -133,7 +136,7 @@ Headless Chromium prints the same single-column layout with `assets/print.css`: 
 
 ## Bundled files
 
-- `scripts/fetch_transcript.py`: YouTube → readable transcript, timestamped caption-cue sidecar, and metadata. Cycles yt-dlp player clients and subtitle tracks and backs off on HTTP 429; falls back to youtube-transcript-api.
+- `scripts/fetch_transcript.py`: YouTube → readable transcript, timestamped caption-cue sidecar, and metadata. Cycles player clients and subtitle tracks, supports explicit local cookie sources, keeps TLS verification enabled, and gives access-block guidance without asking for credentials.
 - `scripts/find_photos.py`: Openverse search → contact sheets → picked photos as data URIs with credits.
 - `scripts/assemble.py`: template + body parts → final HTML (derives the accent palette).
 - `scripts/check_page.py`: mobile overflow check + desktop/mobile screenshot slices.
