@@ -1,4 +1,4 @@
-# video-study-guide-skill
+# tok-study-guide-skill
 
 An **agent skill** that turns learning materials (YouTube videos, PDFs, articles, slide decks and GitHub repos) into a long, beautiful, beginner-friendly **HTML lesson**, plus an optional **colorful PDF**.
 
@@ -7,6 +7,7 @@ Lessons are written in simple 12th-grade English, like a textbook chapter, and i
 - **Everyday Global South metaphors:** Nigerian first (danfo, okada, jollof, the POS agent), then wider Africa and Asia (boda boda, matatu, injera, ugali, matoke, banku, tuk-tuk), always naming both regional words.
 - **Openly licensed photos**, found through Openverse and credited under each image.
 - **Original SVG diagrams** that teach, with no logos or copyrighted characters.
+- **Single-column, fully justified writeups** with a consistent font pair, centered figures, and generous page margins. Photos and diagrams never sit beside paragraphs.
 - **Tested code** with genuine "real output" boxes, small benchmarks, and correction boxes when the source material has mistakes.
 - **Short histories**, every story from the sources, quizzes, a step-by-step plan, a glossary and a References section.
 
@@ -19,20 +20,20 @@ It works with **Claude Code**, the **Claude Agent SDK**, **Claude.ai**, and any 
 Install straight from GitHub (works before it's on npm):
 
 ```bash
-npx github:theAfricanQuant/video-study-guide-skill install
+npx github:theAfricanQuant/tok-study-guide-skill install
 ```
 
 Or from npm:
 
 ```bash
 # 1. Install the skill (default target: Claude Code, ~/.claude/skills/)
-npx video-study-guide-skill install
+npx tok-study-guide-skill install
 
 # 2. Give the skill its own Python environment + Chromium (uses uv if you have it)
-npx video-study-guide-skill setup
+npx tok-study-guide-skill setup
 
 # 3. Check everything
-npx video-study-guide-skill doctor
+npx tok-study-guide-skill doctor
 ```
 
 Then ask your agent:
@@ -43,11 +44,11 @@ Then ask your agent:
 
 | Target | Command | Where it goes | Use for |
 |---|---|---|---|
-| Claude Code, all projects (default) | `npx video-study-guide-skill install` | `~/.claude/skills/video-study-guide/` | Claude Code, Claude Agent SDK |
-| Claude Code, this project only | `… install --target claude-project` | `./.claude/skills/video-study-guide/` | Sharing the skill with a team via the repo |
-| Any agent that reads AGENTS.md | `… install --target agents` | `./skills/video-study-guide/` + a pointer block in `./AGENTS.md` | Codex, Cursor, Gemini CLI, OpenCode… |
-| Any folder | `… install --dir <path>` | `<path>/video-study-guide/` | Harnesses with their own skills folder |
-| Claude.ai | `npx video-study-guide-skill pack` | `dist/video-study-guide.skill` | Upload in Claude.ai settings |
+| Claude Code, all projects (default) | `npx tok-study-guide-skill install` | `~/.claude/skills/tok-study-guide/` | Claude Code, Claude Agent SDK |
+| Claude Code, this project only | `… install --target claude-project` | `./.claude/skills/tok-study-guide/` | Sharing the skill with a team via the repo |
+| Any agent that reads AGENTS.md | `… install --target agents` | `./skills/tok-study-guide/` + a pointer block in `./AGENTS.md` | Codex, Cursor, Gemini CLI, OpenCode… |
+| Any folder | `… install --dir <path>` | `<path>/tok-study-guide/` | Harnesses with their own skills folder |
+| Claude.ai | `npx tok-study-guide-skill pack` | `dist/tok-study-guide.skill` | Upload in Claude.ai settings |
 
 Use the same `--target` or `--dir` with `setup`, `doctor`, `uninstall` and `where`.
 
@@ -62,7 +63,7 @@ If your tool reads `CLAUDE.md` or another instructions file instead of `AGENTS.m
 | `doctor` | Checks Python, packages, Chromium, curl, git, poppler, uv and zip |
 | `uninstall` | Removes the skill (and the AGENTS.md pointer for `--target agents`) |
 | `where` | Prints the install path |
-| `pack` | Builds `dist/video-study-guide.skill` for Claude.ai |
+| `pack` | Builds `dist/tok-study-guide.skill` for Claude.ai |
 
 ## Requirements
 
@@ -83,7 +84,7 @@ brew install poppler uv
 ## What's inside
 
 ```
-skill/video-study-guide/
+skill/tok-study-guide/
 ├── SKILL.md                 # the workflow and writing rules the agent follows
 ├── requirements.txt         # Python packages for the scripts
 ├── scripts/
@@ -115,11 +116,11 @@ By default the skill tells the agent to write finished lessons to `./lesson-outp
 ## Developing
 
 ```bash
-git clone https://github.com/theAfricanQuant/video-study-guide-skill
-cd video-study-guide-skill
+git clone https://github.com/theAfricanQuant/tok-study-guide-skill
+cd tok-study-guide-skill
 node bin/cli.js install --link --force   # edits in skill/ take effect immediately
 npm test                                 # installs into ./.test-install and runs doctor
-npm run build:skill                      # dist/video-study-guide.skill
+npm run build:skill                      # dist/tok-study-guide.skill
 ```
 
 Publish to npm with `npm publish` after updating `version` in `package.json`.

@@ -8,7 +8,7 @@ Copy these snippets into body part files. All classes are already styled by
 1. Header: hero, watch button, chapter nav
 2. Intro block
 3. Chapter wrapper
-4. Two-column split (prose + diagram)
+4. Single-column writeup with a diagram
 5. Story card
 6. Analogy box
 7. Card grid
@@ -101,6 +101,7 @@ Use class `analogy ng` for all analogy boxes (warm gold style).
       </svg>
     </div>
   </section>
+  <!-- The hero art follows the text vertically in the same centered column. -->
   <nav class="toc" aria-label="Chapters">
     <ol>
       <li><a href="#c1">1 · [2-word label]</a></li>
@@ -138,15 +139,19 @@ Use class `analogy ng` for all analogy boxes (warm gold style).
 ```
 Use `chapter-num` = `★` for the plan, `Aa` for the glossary.
 
-## 4. Two-column split
+## 4. Single-column writeup with a diagram
+
+Write the explanation first, then place the centered figure in the same reading column. Never place prose and an image side by side.
 
 ```html
-<div class="split">
-  <div class="prose">…text…</div>
-  <figure class="diagram" style="margin-top:0">…svg…<figcaption>…</figcaption></figure>
+<div class="prose">
+  <p>Explain the idea in a short, connected paragraph.</p>
+</div>
+<figure class="diagram">…svg…<figcaption>One sentence with the takeaway.</figcaption></figure>
+<div class="prose">
+  <p>Continue the explanation and connect the diagram to the next idea.</p>
 </div>
 ```
-Collapses to one column under 980px. A narrow (400-wide viewBox) diagram fits the right column; a wide (860–900) one goes full width outside `.split`.
 
 ## 5. Story card
 
@@ -175,7 +180,7 @@ Collapses to one column under 980px. A narrow (400-wide viewBox) diagram fits th
   <div class="card plum">…</div>
 </div>
 ```
-Colors: `teal`, `coral` (the accent), `gold`, `plum`. For a single stacked column: `style="grid-template-columns:1fr"`.
+Colors: `teal`, `coral` (the accent), `gold`, `plum`. Keep this grid text-only; place all photos and diagrams before or after it as centered block figures in the reading column.
 
 ## 8. Pull quote
 

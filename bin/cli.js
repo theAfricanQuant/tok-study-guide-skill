@@ -1,17 +1,17 @@
 #!/usr/bin/env node
-/* video-study-guide-skill: install the lesson-making skill into agent harnesses. */
+/* tok-study-guide-skill: install the lesson-making skill into agent harnesses. */
 "use strict";
 const fs = require("fs");
 const os = require("os");
 const path = require("path");
 const { spawnSync } = require("child_process");
 
-const SKILL = "video-study-guide";
+const SKILL = "tok-study-guide";
 const PKG_ROOT = path.resolve(__dirname, "..");
 const SRC = path.join(PKG_ROOT, "skill", SKILL);
 const VERSION = require(path.join(PKG_ROOT, "package.json")).version;
-const MARK_START = "<!-- video-study-guide-skill:start -->";
-const MARK_END = "<!-- video-study-guide-skill:end -->";
+const MARK_START = "<!-- tok-study-guide-skill:start -->";
+const MARK_END = "<!-- tok-study-guide-skill:end -->";
 const isWin = process.platform === "win32";
 
 const c = (code, s) => (process.stdout.isTTY ? `\x1b[${code}m${s}\x1b[0m` : s);
@@ -90,8 +90,8 @@ function install(args) {
   }
   if ((args.target || "") === "agents") addAgentsPointer(dest);
   console.log("\nNext steps:");
-  info(`npx video-study-guide-skill setup${args.dir ? ` --dir ${args.dir}` : args.target ? ` --target ${args.target}` : ""}   # Python deps + Chromium`);
-  info(`npx video-study-guide-skill doctor${args.dir ? ` --dir ${args.dir}` : args.target ? ` --target ${args.target}` : ""}  # check everything`);
+  info(`npx tok-study-guide-skill setup${args.dir ? ` --dir ${args.dir}` : args.target ? ` --target ${args.target}` : ""}   # Python deps + Chromium`);
+  info(`npx tok-study-guide-skill doctor${args.dir ? ` --dir ${args.dir}` : args.target ? ` --target ${args.target}` : ""}  # check everything`);
   info("Then ask your agent: \"Make a beginner lesson from this video and PDF\".");
 }
 
@@ -141,7 +141,7 @@ function setup(args) {
     ok("Installing Chromium for Playwright (page checks + PDF export)");
     const extra = process.platform === "linux" && args["with-deps"] ? ["--with-deps"] : [];
     if (run(py, ["-m", "playwright", "install", ...extra, "chromium"]).status !== 0) {
-      warn("Chromium install failed. On Linux, try: npx video-study-guide-skill setup --with-deps (needs sudo).");
+      warn("Chromium install failed. On Linux, try: npx tok-study-guide-skill setup --with-deps (needs sudo).");
     }
   }
   console.log("");
@@ -150,10 +150,10 @@ function setup(args) {
 
 function doctor(args) {
   const dest = targetDir(args);
-  console.log(c("1", `video-study-guide-skill v${VERSION} doctor\n`));
+  console.log(c("1", `tok-study-guide-skill v${VERSION} doctor\n`));
   let problems = 0;
   if (fs.existsSync(path.join(dest, "SKILL.md"))) ok(`Skill installed at ${dest}`);
-  else { bad(`Skill not found at ${dest} (run: npx video-study-guide-skill install)`); problems++; }
+  else { bad(`Skill not found at ${dest} (run: npx tok-study-guide-skill install)`); problems++; }
 
   const py = fs.existsSync(venvPython(dest)) ? venvPython(dest) : (has("python3") ? "python3" : "python");
   const pv = spawnSync(py, ["--version"], { encoding: "utf8", shell: isWin });
@@ -167,14 +167,14 @@ function doctor(args) {
     if (r.status === 0) ok(label); else { (m === "youtube_transcript_api" || m === "pypdf" ? warn : bad)(`${label}: missing`); if (!(m === "youtube_transcript_api" || m === "pypdf")) problems++; }
   }
   const chrome = spawnSync(py, ["-c", "from playwright.sync_api import sync_playwright\nwith sync_playwright() as p:\n  b=p.chromium.launch(); b.close()"], { encoding: "utf8", shell: isWin });
-  if (chrome.status === 0) ok("Chromium launches"); else { bad("Chromium not ready (run: npx video-study-guide-skill setup)"); problems++; }
+  if (chrome.status === 0) ok("Chromium launches"); else { bad("Chromium not ready (run: npx tok-study-guide-skill setup)"); problems++; }
 
   for (const [cmd, label, required] of [["curl", "curl (downloads, photo search)", true], ["git", "git (cloning repos)", true],
                                         ["pdftoppm", "pdftoppm / poppler (PDF page previews)", false], ["uv", "uv (recommended)", false], ["zip", "zip (building .skill files)", false]]) {
     if (has(cmd)) ok(label); else { (required ? bad : warn)(`${label}: not found`); if (required) problems++; }
   }
   console.log("");
-  if (problems) { bad(`${problems} problem(s). Fix the ✗ items above, or run: npx video-study-guide-skill setup`); process.exitCode = 1; }
+  if (problems) { bad(`${problems} problem(s). Fix the ✗ items above, or run: npx tok-study-guide-skill setup`); process.exitCode = 1; }
   else ok("All set. Ask your agent to make a lesson from a video, PDF or repo.");
 }
 
@@ -188,11 +188,11 @@ function pack() {
 }
 
 function help() {
-  console.log(`video-study-guide-skill v${VERSION}
+  console.log(`tok-study-guide-skill v${VERSION}
 Turn YouTube videos, PDFs, articles and repos into beginner lessons (HTML + PDF).
 
 Usage:
-  npx video-study-guide-skill <command> [options]
+  npx tok-study-guide-skill <command> [options]
 
 Commands:
   install      Copy the skill into an agent harness
@@ -200,13 +200,13 @@ Commands:
   doctor       Check that everything the skill needs is available
   uninstall    Remove the installed skill
   where        Print the install path for the chosen target
-  pack         Build dist/video-study-guide.skill (zip) for Claude.ai upload
+  pack         Build dist/tok-study-guide.skill (zip) for Claude.ai upload
 
 Targets (for install/setup/doctor/uninstall/where):
-  --target claude           ~/.claude/skills/video-study-guide          (default; Claude Code, Agent SDK)
-  --target claude-project   ./.claude/skills/video-study-guide          (this project only)
-  --target agents           ./skills/video-study-guide + AGENTS.md pointer (Codex, Cursor, other agents)
-  --dir <path>              <path>/video-study-guide                    (any harness's skills folder)
+  --target claude           ~/.claude/skills/tok-study-guide          (default; Claude Code, Agent SDK)
+  --target claude-project   ./.claude/skills/tok-study-guide          (this project only)
+  --target agents           ./skills/tok-study-guide + AGENTS.md pointer (Codex, Cursor, other agents)
+  --dir <path>              <path>/tok-study-guide                    (any harness's skills folder)
 
 Options:
   --force        Overwrite an existing install (keeps its .venv)
@@ -215,9 +215,9 @@ Options:
   --no-browser   (setup) skip the Chromium download
 
 Examples:
-  npx video-study-guide-skill install && npx video-study-guide-skill setup
-  npx video-study-guide-skill install --target agents
-  npx video-study-guide-skill install --dir ~/.config/my-agent/skills
+  npx tok-study-guide-skill install && npx tok-study-guide-skill setup
+  npx tok-study-guide-skill install --target agents
+  npx tok-study-guide-skill install --dir ~/.config/my-agent/skills
 `);
 }
 

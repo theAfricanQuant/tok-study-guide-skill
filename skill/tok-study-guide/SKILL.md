@@ -1,5 +1,5 @@
 ---
-name: video-study-guide
+name: tok-study-guide
 description: Turn learning materials (YouTube videos, PDFs, articles, slide decks, GitHub repos, transcripts) into a long, beautiful, beginner-friendly HTML lesson, with an optional colorful PDF copy. Lessons use simple 12th-grade English, Nigerian and wider African / Global South metaphors (okada / boda boda, danfo / matatu, keke / tuk-tuk, jollof, injera, ugali), openly licensed photos, original SVG diagrams, tested code with real outputs, short histories, every story from the sources, a step-by-step plan, a glossary and a References section. Use this skill whenever the user shares videos, PDFs, links or repos and asks to "study this", "break it down", "explain this simply", "make a lesson / study guide / textbook chapter", "turn this into an HTML page or PDF", "do the same as before", or uploads earlier guides and asks for more like them.
 ---
 
@@ -13,8 +13,8 @@ Turn whatever the user provides into one self-contained HTML lesson that a compl
 - **Output folder (`$OUTPUT_DIR`)**: where finished `.html` and `.pdf` files go. Default: `./lesson-output/` in the current project. In the Claude.ai sandbox use `/mnt/user-data/outputs/`.
 - **Work folder (`$WORK_DIR`)**: scratch space for body parts, transcripts and photos. Default: `./lesson-work/`. In the Claude.ai sandbox use `/home/claude/` and `/tmp/`.
 - **Delivery**: if an Artifact/publish tool exists (Claude.ai), publish the HTML; else if `present_files` exists, present it; otherwise just save it to `$OUTPUT_DIR` and tell the user the path and to open it in a browser.
-- **Python to use**: if `$SKILL_DIR/.venv/bin/python` (Windows: `$SKILL_DIR\.venv\Scripts\python.exe`) exists, run every script with it instead of `python3`; it has all dependencies installed (created by `npx video-study-guide-skill setup`).
-- **Dependencies**: Python 3.10+, `yt-dlp`, `pillow`, `playwright` (+ Chromium), `curl`, `git`, and `pdftoppm` (poppler). If something is missing, run `npx video-study-guide-skill doctor` (when installed via npm) or install it before starting.
+- **Python to use**: if `$SKILL_DIR/.venv/bin/python` (Windows: `$SKILL_DIR\.venv\Scripts\python.exe`) exists, run every script with it instead of `python3`; it has all dependencies installed (created by `npx tok-study-guide-skill setup`).
+- **Dependencies**: Python 3.10+, `yt-dlp`, `pillow`, `playwright` (+ Chromium), `curl`, `git`, and `pdftoppm` (poppler). If something is missing, run `npx tok-study-guide-skill doctor` (when installed via npm) or install it before starting.
 
 ## Inputs you may get (often several at once)
 
@@ -67,10 +67,10 @@ python3 "$SKILL_DIR/scripts/find_photos.py" search --out $WORK_DIR/photos \
 # view $WORK_DIR/photos/sheet_<key>.jpg with the image viewer, choose the best index for each key
 python3 "$SKILL_DIR/scripts/find_photos.py" pick --out $WORK_DIR/photos danfo=0 injera=0
 ```
-`pick` writes `$WORK_DIR/photos/picked.json` (compressed data URIs plus credits). Use `photo_html(key, alt)` from the script, or the snippet in `references/components.md`, to place each photo inside its analogy box **with its credit line**. Aim for 10–20 photos; skip any analogy where no good photo exists rather than using a poor match.
+`pick` writes `$WORK_DIR/photos/picked.json` (compressed data URIs plus credits). Use `photo_html(key, alt)` from the script, or the snippet in `references/components.md`, to place each photo in the single reading column **with its credit line**. Keep every photo as a centered block figure between paragraphs. Never place a photo next to or behind prose. Aim for 10–20 photos; skip any analogy where no good photo exists rather than using a poor match.
 
 ### 5. Write the body in parts
-Read `references/components.md` for every snippet. Write 6–10 part files (`$WORK_DIR/<slug>/02.html …`) so no single write is huge. Required order: header (hero + chapter nav including Glossary and References) → intro → Parts and chapters → plan → glossary → references → footer.
+Read `references/components.md` for every snippet. Write 6–10 part files (`$WORK_DIR/<slug>/02.html …`) so no single write is huge. Required order: header (stacked hero + chapter nav including Glossary and References) → intro → Parts and chapters → plan → glossary → references → footer. Keep the full lesson in one centered reading column. Put each diagram or photo on its own line after the relevant paragraph; do not place text and images side by side.
 
 ### 6. Assemble, check, publish
 ```bash
@@ -85,7 +85,7 @@ python3 "$SKILL_DIR/scripts/check_page.py" $OUTPUT_DIR/<slug>.html
 python3 "$SKILL_DIR/scripts/make_pdf.py" $OUTPUT_DIR/<slug>.html --title "Short running title"
 pdftoppm -r 40 -png $OUTPUT_DIR/<slug>.pdf $WORK_DIR/pp   # then view a few pages
 ```
-Headless Chromium prints the same page with `assets/print.css`: a cover, a Contents page, one chapter per page, unsplit boxes and diagrams, wrapped code, open quiz answers, and "Page X of Y" footers. If a diagram is too large on paper, adjust `print.css` and re-run. Deliver with `present_files`.
+Headless Chromium prints the same single-column layout with `assets/print.css`: a cover, a Contents page, one chapter per page, unsplit boxes and diagrams, wrapped code, open quiz answers, and "Page X of Y" footers. If a diagram is too large on paper, adjust `print.css` and re-run. Deliver with `present_files`.
 
 ## Writing rules
 
@@ -94,6 +94,13 @@ Headless Chromium prints the same page with `assets/print.css`: a cover, a Conte
 - First person plural ("we built the same table…") for tests; otherwise neutral.
 - Mention the source authors by name only in the intro (one sentence) and the References. Elsewhere: "the article", "the first video", "the repo", "the creator".
 - Simple English for a curious 12th grader: short sentences, active voice. Define every technical term the first time (inline `term` tooltip) and again in the glossary, and help readers *picture* it (what a table looks like, what a row represents).
+
+**Page layout and typography**
+- Use a single, centered text column with balanced left/right margins and a comfortable line length (about 40–46rem on screen). Keep the page background, spacing, and chapter rhythm calm and consistent.
+- Use the bundled body sans-serif and display serif consistently. Keep body text at a readable size with generous line spacing. Do not introduce extra font families for decoration.
+- Justify prose paragraphs, list copy, captions, and explanatory callouts with `text-align: justify; text-justify: inter-word; hyphens: auto;`. Keep headings, navigation, tables, and code left-aligned for legibility.
+- Never put a photo, diagram, screenshot, or chart beside prose. Do not use floats or a text-plus-image grid. Stack hero text and hero art vertically. Put every figure in the reading column as a centered block, at up to 100% of that column, with its caption directly below.
+- Preserve the same one-column reading order on narrow screens and in A4 print. Prevent horizontal overflow; use the existing print margins.
 
 **Metaphors** come from Nigeria first and the wider Global South (see `references/metaphors.md`). Name both regional terms when they differ (okada / boda boda, danfo / matatu, keke / bajaj / tuk-tuk). No German, American or European metaphors unless the user asks.
 
@@ -124,6 +131,6 @@ Headless Chromium prints the same page with `assets/print.css`: a cover, a Conte
 - `scripts/assemble.py`: template + body parts → final HTML (derives the accent palette).
 - `scripts/check_page.py`: mobile overflow check + desktop/mobile screenshot slices.
 - `scripts/make_pdf.py` + `assets/print.css`: colorful A4 PDF via headless Chromium.
-- `assets/template_head.html` / `assets/template_foot.html`: design system (light/dark, fonts, code/output/warn/table/part/photo styles) and the lightweight scroll script.
+- `assets/template_head.html` / `assets/template_foot.html`: design system (light/dark, consistent fonts, justified single-column prose, centered block figures, code/output/warn/table/part/photo styles) and the lightweight scroll script.
 - `references/components.md`: every HTML snippet and the SVG diagram cookbook.
 - `references/metaphors.md`: metaphor rules, a bank of concept → metaphor mappings, and photo search terms.
