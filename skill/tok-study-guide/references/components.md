@@ -141,15 +141,15 @@ Use `chapter-num` = `★` for the plan, `Aa` for the glossary.
 
 ## 4. Single-column writeup with a diagram
 
-Write the explanation first, then place the centered figure in the same reading column. Never place prose and an image side by side.
+Center the prose container and figure within the same reading column so their margins feel balanced. Introduce the concept immediately before the figure, place the figure centered at a comfortable reading size, then explain how to read it and connect its takeaway to the next idea. Never leave a small diagram stranded at the left edge or place prose and an image side by side.
 
 ```html
 <div class="prose">
-  <p>Explain the idea in a short, connected paragraph.</p>
+  <p>Introduce the idea and tell the reader what to look for in the figure.</p>
 </div>
 <figure class="diagram">…svg…<figcaption>One sentence with the takeaway.</figcaption></figure>
 <div class="prose">
-  <p>Continue the explanation and connect the diagram to the next idea.</p>
+  <p>Walk through what the figure shows and connect it to the next idea.</p>
 </div>
 ```
 
@@ -214,7 +214,7 @@ Use on the first appearance of jargon. Keep tips under ~25 words.
 
 ```html
 <figure class="diagram">
-  <svg viewBox="0 0 860 260" role="img" aria-labelledby="xT xD">
+  <svg viewBox="0 0 680 360" role="img" aria-labelledby="xT xD">
     <title id="xT">[Title]</title>
     <desc id="xD">[Full plain-language description of what the diagram shows]</desc>
     …
@@ -233,7 +233,7 @@ Use on the first appearance of jargon. Keep tips under ~25 words.
 | Solid fills | `f-coral` `f-teal` `f-gold` `f-plum` |
 | Soft fills | `f-coral-soft` `f-teal-soft` `f-gold-soft` `f-plum-soft` |
 | Strokes | `s-coral` `s-teal` `s-gold` `s-plum`, `stroke-ink` `stroke-rule` `stroke-muted` |
-| Text sizes | `t-sm` (13) `t-md` (15 bold) `t-lg` (19 bold) `t-xl` (26) `t-disp` (30 serif) |
+| Text sizes | `t-sm` (20) `t-md` (22 bold) `t-lg` (26 bold) `t-xl` (32) `t-disp` (36 serif) |
 
 Inline color via style also works: `style="fill:var(--coral);font-weight:700"`.
 
@@ -257,7 +257,7 @@ Inline color via style also works: `style="fill:var(--coral);font-weight:700"`.
 
 **Originality:** every diagram is drawn from scratch to explain an idea. Never draw or trace a real company's logo, a film/TV/comic/game character, a movie poster, an album cover or any other existing artwork, even if the video mentions it. Refer to it in words instead.
 
-**Layout tips:** keep labels at least 10px inside the viewBox edges. Labels drawn right of a shape near the right edge get clipped, so use `text-anchor="end"`. Wide diagrams (860–900) need ≥13px text to stay legible on phones.
+**Layout tips:** keep labels at least 16 units inside the viewBox edges. Prefer a viewBox no wider than 680 units and use at least 24 units for main labels and 20 for secondary labels. Stack flow steps vertically or use short rows instead of shrinking text to fit a panoramic diagram. On a phone, the smallest useful label should still render near body-text size. If detail will not fit, split the figure or use a table with explanatory prose. Keep every figure centered and include a setup paragraph before it and a walkthrough paragraph after it.
 
 ## 13. Step-by-step plan
 

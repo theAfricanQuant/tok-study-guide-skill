@@ -50,7 +50,7 @@ Group 10–17 chapters into **Parts** (Part I, II, III… with `.part` dividers)
 4. **Advanced or AI material**, ending with a code walkthrough when there's a repo.
 5. **Step-by-step plan** (`id="plan"`), **Glossary** (`id="glossary"`), **References** (`id="references"`).
 
-Aim for 15–25 original diagrams, at least one analogy per chapter, story cards for every anecdote, and 3–6 quizzes.
+Use original diagrams selectively: include one for a major idea when a visual makes its relationships clearer, and prefer fewer, substantial figures over a quota of small diagrams. Keep at least one analogy per chapter, story cards for every anecdote, and 3–6 quizzes.
 
 ### 3. Test everything you can (this is what makes the lesson trustworthy)
 Run all code from the materials, and any code you add, in the sandbox (install missing Python packages with `uv pip install …` or `pip install …`). Download the sample datasets the sources use. Then:
@@ -67,10 +67,10 @@ python3 "$SKILL_DIR/scripts/find_photos.py" search --out $WORK_DIR/photos \
 # view $WORK_DIR/photos/sheet_<key>.jpg with the image viewer, choose the best index for each key
 python3 "$SKILL_DIR/scripts/find_photos.py" pick --out $WORK_DIR/photos danfo=0 injera=0
 ```
-`pick` writes `$WORK_DIR/photos/picked.json` (compressed data URIs plus credits). Use `photo_html(key, alt)` from the script, or the snippet in `references/components.md`, to place each photo in the single reading column **with its credit line**. Keep every photo as a centered block figure between paragraphs. Never place a photo next to or behind prose. Aim for 10–20 photos; skip any analogy where no good photo exists rather than using a poor match.
+`pick` writes `$WORK_DIR/photos/picked.json` (compressed data URIs plus credits). Use `photo_html(key, alt)` from the script, or the snippet in `references/components.md`, to place each photo in the single reading column **with its credit line**. Keep every photo as a centered block figure between paragraphs, using the same balanced left/right gutters as the text. Never place a photo next to or behind prose. Aim for 10–20 photos; skip any analogy where no good photo exists rather than using a poor match.
 
 ### 5. Write the body in parts
-Read `references/components.md` for every snippet. Write 6–10 part files (`$WORK_DIR/<slug>/02.html …`) so no single write is huge. Required order: header (stacked hero + chapter nav including Glossary and References) → intro → Parts and chapters → plan → glossary → references → footer. Keep the full lesson in one centered reading column. Put each diagram or photo on its own line after the relevant paragraph; do not place text and images side by side.
+Read `references/components.md` for every snippet. Write 6–10 part files (`$WORK_DIR/<slug>/02.html …`) so no single write is huge. Required order: header (stacked hero + chapter nav including Glossary and References) → intro → Parts and chapters → plan → glossary → references → footer. Keep the full lesson in one centered reading column with visible, even left/right margins. Center prose blocks as well as figures so their edges line up. Put each diagram or photo on its own line within the explanation: introduce what readers should notice, show a large centered figure, then explain what it demonstrates and connect it to the next idea. Captions alone do not replace this explanation. Never use a tiny side-column image or place text and images side by side.
 
 ### 6. Assemble, check, publish
 ```bash
@@ -96,10 +96,10 @@ Headless Chromium prints the same single-column layout with `assets/print.css`: 
 - Simple English for a curious 12th grader: short sentences, active voice. Define every technical term the first time (inline `term` tooltip) and again in the glossary, and help readers *picture* it (what a table looks like, what a row represents).
 
 **Page layout and typography**
-- Use a single, centered text column with balanced left/right margins and a comfortable line length (about 40–46rem on screen). Keep the page background, spacing, and chapter rhythm calm and consistent.
+- Use a single, centered text column with visibly balanced left/right margins and a comfortable line length (about 42–46rem for prose on screen). Center the prose container itself; do not leave a narrow text block pinned to the left of a wider page. Keep the page background, spacing, and chapter rhythm calm and consistent.
 - Use the bundled body sans-serif and display serif consistently. Keep body text at a readable size with generous line spacing. Do not introduce extra font families for decoration.
 - Justify prose paragraphs, list copy, captions, and explanatory callouts with `text-align: justify; text-justify: inter-word; hyphens: auto;`. Keep headings, navigation, tables, and code left-aligned for legibility.
-- Never put a photo, diagram, screenshot, or chart beside prose. Do not use floats or a text-plus-image grid. Stack hero text and hero art vertically. Put every figure in the reading column as a centered block, at up to 100% of that column, with its caption directly below.
+- Never put a photo, diagram, screenshot, or chart beside prose. Do not use floats, tiny side-column graphics, or a text-plus-image grid. Stack hero text and hero art vertically. Put every figure in the reading column as a centered block, at up to 100% of that column, with its caption directly below. Make diagrams broad enough to read at phone size; if labels would need to be shrunk, simplify or split the diagram instead.
 - Preserve the same one-column reading order on narrow screens and in A4 print. Prevent horizontal overflow; use the existing print margins.
 
 **Metaphors** come from Nigeria first and the wider Global South (see `references/metaphors.md`). Name both regional terms when they differ (okada / boda boda, danfo / matatu, keke / bajaj / tuk-tuk). No German, American or European metaphors unless the user asks.
@@ -107,7 +107,7 @@ Headless Chromium prints the same single-column layout with `assets/print.css`: 
 **Your own words, always.** Paraphrase video and article content. Short attributed quotes only. Never paste transcript passages, lyrics, book excerpts, or long periodical passages. Code and short excerpts from documents the user supplied may be quoted with attribution.
 
 **Images:**
-- Diagrams are original SVG drawn from simple shapes. Never draw logos, brand marks, film/TV/game/comic characters, movie posters or other existing artwork; name them in text instead.
+- Diagrams are original SVG drawn from simple shapes. Each must teach a point explained in the nearby prose, not act as a tiny decoration. Use a compact, readable viewBox (prefer width ≤ 680 units), main labels of at least 24 units and secondary labels of at least 20 units; stack steps instead of squeezing them into a wide strip. If the information does not fit, simplify the figure or split it into two. Never draw logos, brand marks, film/TV/game/comic characters, movie posters or other existing artwork; name them in text instead.
 - Photos must be openly licensed (CC0, CC BY, CC BY-SA, public domain) and credited under the image with title, creator, license and link. `find_photos.py` handles this.
 - Do not embed news-outlet or magazine photos. Link to the article instead. Official government pages released under open licences (e.g. GOV.UK's Open Government Licence) may be clipped with the licence noted, but crop out crests and logos.
 

@@ -1,4 +1,4 @@
-@page { size: A4; margin: 16mm 14mm 18mm 14mm; }
+@page { size: A4; margin: 16mm 18mm 18mm; }
 html, body { background: #F3F5FA !important; }
 * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
 #progress, .term .tip { display: none !important; }
@@ -20,7 +20,7 @@ main { padding: 0 !important; max-width: none !important; }
 .part { break-before: page; margin-top: 0 !important; }
 .part + .chapter { break-before: avoid; }
 .split { display: block !important; max-width: 100% !important; }
-.prose, .story, .analogy, .split > *, details.quiz, .warn, .verify, pre.code, pre.out, .tablewrap, .grid3, figure.diagram { max-width: 100% !important; }
+.chapter-head, .prose, .story, .analogy, .split > *, details.quiz, .warn, .verify, pre.code, pre.out, .tablewrap, .grid3, figure.diagram { max-width: 100% !important; margin-left: auto !important; margin-right: auto !important; }
 h2, h3, h4, .chapter-head { break-after: avoid; }
 figure.diagram, .story, .analogy, .card, details.quiz, .warn, .verify, pre.out, tr, .aph, dl.gloss div, ol.playbook > li { break-inside: avoid; }
 pre.code { white-space: pre-wrap !important; word-break: break-word; overflow: visible !important; font-size: 8.6pt !important; break-inside: avoid; }
@@ -34,7 +34,7 @@ details.quiz > p { display: block !important; }
 a.watch { padding: 2mm 4mm !important; }
 footer { break-before: avoid; }
 .split figure.diagram { max-width: 100% !important; margin-left: auto !important; margin-right: auto !important; }
-.split figure.diagram svg { max-height: 115mm; }
+/* Do not shrink diagrams into a sidecar-sized graphic in print. */
 figure.diagram svg { max-height: 150mm; }
 .aph img { max-height: 58mm; }
 .aph { max-width: 100%; margin-left: auto; margin-right: auto; }

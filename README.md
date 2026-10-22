@@ -9,7 +9,7 @@ Lessons are written in simple 12th-grade English, like a textbook chapter, and i
 - **Everyday Global South metaphors:** Nigerian first (danfo, okada, jollof, the POS agent), then wider Africa and Asia (boda boda, matatu, injera, ugali, matoke, banku, tuk-tuk), always naming both regional words.
 - **Openly licensed photos**, found through Openverse and credited under each image.
 - **Original SVG diagrams** that teach, with no logos or copyrighted characters.
-- **Single-column, fully justified writeups** with a consistent font pair, centered figures, and generous page margins. Photos and diagrams never sit beside paragraphs.
+- **Single-column, fully justified writeups** with a centered prose column, balanced page margins, and large, centered diagrams explained alongside the surrounding text. Photos and diagrams never sit in side columns.
 - **Tested code** with genuine "real output" boxes, small benchmarks, and correction boxes when the source material has mistakes.
 - **Short histories**, every story from the sources, quizzes, a step-by-step plan, a glossary and a References section.
 
