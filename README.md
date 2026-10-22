@@ -2,7 +2,7 @@
 
 The name **TOK** draws on the Berom verb *tɔk*, “to know; to understand; to know how to” (p. 162). It is a verb, not a noun meaning “knowledge” or “ability.” The dictionary separately lists *tɔk tsik* (“understanding”; p. 162, finderlist p. 243) and *tɔk ciwil* (“intelligence”; p. 162, finderlist p. 213). For “cleverness; skill; wisdom,” it lists *nèsisɛng* (p. 116), with *nètsitsɛng* as a synonym.
 
-An **agent skill** that turns learning materials (YouTube videos, PDFs, articles, slide decks and GitHub repos) into a long, beautiful, beginner-friendly **HTML lesson**, plus an optional **colorful PDF**.
+An **agent skill** that turns learning materials (YouTube videos, PDFs, articles, slide decks and GitHub repos) into a long, beautiful, beginner-friendly **HTML lesson**. HTML is the default output. A PDF is created only when explicitly requested, and it accompanies the HTML lesson.
 
 Lessons are written in simple 12th-grade English, like a textbook chapter, and include:
 
@@ -11,7 +11,8 @@ Lessons are written in simple 12th-grade English, like a textbook chapter, and i
 - **Original SVG diagrams** that teach, with no logos or copyrighted characters.
 - **Single-column, fully justified writeups** with a centered prose column, balanced page margins, and large, centered diagrams explained alongside the surrounding text. Photos and diagrams never sit in side columns.
 - **Tested code** with genuine "real output" boxes, small benchmarks, and correction boxes when the source material has mistakes.
-- **Short histories**, every story from the sources, quizzes, a step-by-step plan, a glossary and a References section.
+- **A connected learning path** that moves from understanding to practice to judgment, with clear source anchors and transitions that explain how each material contributes.
+- **Short histories**, source-grounded examples, retrieval checks with feedback, an actionable plan, and focused glossary and References sections when they help.
 
 It works with **Claude Code**, the **Claude Agent SDK**, **Claude.ai**, and any agent that can read a `SKILL.md` file or an `AGENTS.md` pointer (Codex, Cursor, Gemini CLI, OpenCode, and others).
 
@@ -90,7 +91,7 @@ skill/tok-study-guide/
 ├── SKILL.md                 # the workflow and writing rules the agent follows
 ├── requirements.txt         # Python packages for the scripts
 ├── scripts/
-│   ├── fetch_transcript.py  # YouTube → transcript (+ title, channel, URL)
+│   ├── fetch_transcript.py  # YouTube → transcript + timestamp cues + metadata
 │   ├── find_photos.py       # Openverse search → contact sheets → embedded, credited photos
 │   ├── assemble.py          # template + body parts → one HTML file
 │   ├── check_page.py        # mobile-overflow check + screenshots
@@ -101,19 +102,20 @@ skill/tok-study-guide/
 │   └── print.css            # cover, contents, one chapter per page
 └── references/
     ├── components.md        # every HTML building block + SVG diagram cookbook
-    └── metaphors.md         # metaphor rules, concept→metaphor bank, photo search terms
+    ├── metaphors.md         # metaphor rules, concept→metaphor bank, photo search terms
+    └── learning-design.md   # optional continuity records for multi-session courses
 ```
 
 ## Where the agent saves things
 
-By default the skill tells the agent to write finished lessons to `./lesson-output/` and scratch files to `./lesson-work/`. In the Claude.ai sandbox it uses `/mnt/user-data/outputs/`. You can ask for a different folder in your prompt.
+The skill always saves the finished HTML lesson to `./lesson-output/` by default and scratch files to `./lesson-work/`. It creates a PDF in the output folder only when explicitly requested. In the Claude.ai sandbox, outputs go to `/mnt/user-data/outputs/`. You can ask for a different folder in your prompt.
 
 ## Responsible use
 
 - Lessons **paraphrase** video and article content and quote only short, attributed passages. Code from materials you supply is quoted with attribution.
 - Photos must be **openly licensed** and credited. News or magazine photos are linked, not embedded.
 - Diagrams are **original**. No logos, brand marks or copyrighted characters are drawn.
-- YouTube sometimes rate-limits transcript downloads. The script retries several ways; if it still fails, paste the transcript.
+- YouTube sometimes rate-limits transcript downloads. The script retries several ways; if it still fails, provide a transcript or usable captions. Successful downloads include a timestamped cue sidecar for linking lessons to exact moments.
 
 ## Developing
 

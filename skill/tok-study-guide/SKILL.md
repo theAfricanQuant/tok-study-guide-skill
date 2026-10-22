@@ -1,11 +1,11 @@
 ---
 name: tok-study-guide
-description: Turn learning materials (YouTube videos, PDFs, articles, slide decks, GitHub repos, transcripts) into a long, beautiful, beginner-friendly HTML lesson, with an optional colorful PDF copy. Lessons use simple 12th-grade English, Nigerian and wider African / Global South metaphors (okada / boda boda, danfo / matatu, keke / tuk-tuk, jollof, injera, ugali), openly licensed photos, original SVG diagrams, tested code with real outputs, short histories, every story from the sources, a step-by-step plan, a glossary and a References section. Use this skill whenever the user shares videos, PDFs, links or repos and asks to "study this", "break it down", "explain this simply", "make a lesson / study guide / textbook chapter", "turn this into an HTML page or PDF", "do the same as before", or uploads earlier guides and asks for more like them.
+description: Turn learning materials (YouTube videos, PDFs, articles, slide decks, GitHub repos, transcripts) into a long, beautiful, beginner-friendly HTML lesson; create a PDF copy only when explicitly requested. Lessons use simple 12th-grade English, Nigerian and wider African / Global South metaphors (okada / boda boda, danfo / matatu, keke / tuk-tuk, jollof, injera, ugali), openly licensed photos, original SVG diagrams, tested code with real outputs, short histories, every story from the sources, a step-by-step plan, a glossary and a References section. Use this skill whenever the user shares videos, PDFs, links or repos and asks to "study this", "break it down", "explain this simply", "make a lesson / study guide / textbook chapter", "turn this into an HTML page or PDF", "do the same as before", or uploads earlier guides and asks for more like them.
 ---
 
-# Materials → Lesson (HTML + optional PDF)
+# Materials → HTML lesson (PDF only on request)
 
-Turn whatever the user provides into one self-contained HTML lesson that a complete beginner reads start to finish, then optionally print it to a colorful PDF. Write it like a good textbook chapter or blog post meant for students, not a reply to the user.
+Turn whatever the user provides into one self-contained HTML lesson that a complete beginner reads start to finish. Create a colorful PDF copy only when the user explicitly asks for one. Write the lesson like a good textbook chapter or blog post meant for students, not a reply to the user.
 
 ## Paths and environment (read first)
 
@@ -20,7 +20,7 @@ Turn whatever the user provides into one self-contained HTML lesson that a compl
 
 | Material | How to get the content |
 |---|---|
-| YouTube link or ID | `scripts/fetch_transcript.py` (below). If it fails, ask the user to paste the transcript. |
+| YouTube link or ID | `scripts/fetch_transcript.py` (below). It saves readable transcript text plus a timestamped cue sidecar. If fetching fails, ask for a transcript or usable captions. |
 | PDF (article, paper, slides) | If its text is already in context, use it. Otherwise read the `pdf-reading` (or `file-reading`) skill and extract it from the uploads folder (Claude.ai: `/mnt/user-data/uploads/`). |
 | GitHub repo | `git clone --depth 1 <url> "$WORK_DIR/repo"`, then read the README, docs and main code files. |
 | Web article URL | `curl -sL -A "Mozilla/5.0" <url>` and strip tags; if blocked, ask for a PDF or paste. |
@@ -30,36 +30,41 @@ When several materials are given, make **one combined lesson** that flows from b
 
 ## Workflow
 
-### 1. Gather and read everything
+### 1. Gather sources and establish the learning goal
 ```bash
 python3 "$SKILL_DIR/scripts/fetch_transcript.py" "<url>" --out "$WORK_DIR/<slug>.txt"
 ```
-The transcript script also writes `<out>.meta.json` with the exact title, channel and URL; use them in the hero buttons and References. Read every source completely (long transcripts in ~40,000-character chunks). Keep a running outline:
-- every concept, framework, number and piece of advice
-- **every story and anecdote** (who, what happened, the lesson)
-- all code and commands in the materials
-- jargon to explain
-- names auto-captions probably misspelled (correct them when confident)
-- claims or code that look wrong (you'll test them in step 3)
+For YouTube, the script writes readable transcript text, `<out>.timestamps.txt` (caption cues with time anchors), and `<out>.meta.json` (title, channel, URL). Use the readable transcript to understand the argument and the timestamp sidecar to locate and cite spoken moments. A transcript does not show what is on screen: inspect a relevant video moment or supplied frame when a visual matters, and never claim to have seen a visual you could not access.
 
-### 2. Plan the lesson
-Group 10–17 chapters into **Parts** (Part I, II, III… with `.part` dividers), from foundations to advanced. Good shape for technical topics:
-1. **The big picture:** what the thing is, the basic vocabulary (what a table/row/column is, and how to picture it), a short **history** of the ideas and tools (dated timeline diagram), and comparisons with what learners already know. If a beginner would ask "why not just use X?", answer it directly with a fair comparison and a real test.
-2. **Hands-on basics**, following the sources.
-3. **Deeper material and related formats/tools.**
-4. **Advanced or AI material**, ending with a code walkthrough when there's a repo.
-5. **Step-by-step plan** (`id="plan"`), **Glossary** (`id="glossary"`), **References** (`id="references"`).
+Read each source fully, using ~40,000-character chunks for long transcripts. Keep a compact **source ledger** as you read: assign each source an ID (`V1`, `P1`, `R1`), record its type/title/link, note its main ideas, and capture precise anchors. Use timestamps for videos, page numbers for PDFs, headings for articles, slide numbers for decks, and file/symbol/line or notebook section/cell for code. Mark conflicts or gaps instead of silently blending them. Correct caption-garbled names only when confident.
 
-Use original diagrams selectively: include one for a major idea when a visual makes its relationships clearer, and prefer fewer, substantial figures over a quota of small diagrams. Keep at least one analogy per chapter, story cards for every anecdote, and 3–6 quizzes.
+Set a short **learning brief** from the request and source: what the learner should be able to do, what they likely know already, and any practical context. If prior knowledge is uncertain, open with a quick, low-stakes self-check and give the answer or feedback; do not make the whole guide depend on an unsupported assumption. Ask a question only when the missing context would materially change the lesson.
 
-### 3. Test everything you can (this is what makes the lesson trustworthy)
+### 2. Design one connected learning path
+Choose the length and number of sections to fit the user's request and the material. Do not pad a short source to hit a chapter, quiz, analogy, or glossary quota. For a broad or technical subject, a useful path is:
+1. **Orient:** state the practical mission, why it matters, prerequisite ideas, and how the sources fit together.
+2. **Build knowledge:** explain the concepts in an order where each depends on what came before; define notation and terms before relying on them.
+3. **Practice a skill:** work a concrete example, calculation, code change, observation, or interpretation grounded in the source.
+4. **Use judgment:** explain what the result means, its assumptions and limits, when to use the idea, and how to recognize a case where it does not apply.
+5. **Connect and retrieve:** revisit the core chain of ideas, use short recall/application checks with clear feedback, and end with an actionable plan plus references and a focused glossary when they help.
+
+Give each major section one clear learner outcome. Make transitions explicit: say what the current idea uses from the previous one and what it unlocks next. Explain why examples are concrete: readers can calculate, observe, run, compare, or decide something with them. If the sources disagree, show the disagreement and identify which source supports each account. Use an analogy only when it makes a specific relationship easier to picture; do not force one into every section. Draw diagrams selectively when they clarify a relationship that prose alone would make harder to see.
+
+### 3. Teach from evidence across media
+Use the source ledger while writing, not just when assembling References. Attach a source anchor close to each important claim, worked example, or interpretation. Link video citations to the exact YouTube time; cite PDF pages, article headings, slide numbers, or code/notebook locations as appropriate. A claim supported by several sources can cite several anchors. Keep source-derived claims distinct from your own explanation, calculations, and checks. Never invent a timestamp, page, cell, result, or visual detail.
+
+For a mixed-source lesson, give each source a job in the same learning path: for example, a video introduces the intuition, a notebook makes the calculation visible, and a paper explains the assumptions. Explain that connection at the point where it helps the learner. For YouTube, make citations clickable at the cue time by linking to the video's canonical URL with `&t=<seconds>s` (or `?t=` when there is no existing query), converting `HH:MM:SS` to seconds. If a transcript is available but its visual content is not, cite the spoken explanation and say that the visual could not be checked.
+
+For a continuing course or a user who wants future sessions to build on this one, read [references/learning-design.md](references/learning-design.md). Use its mission, source, and learning records only when ongoing continuity is useful; a one-off guide should stay self-contained.
+
+### 4. Test everything you can (this is what makes the lesson trustworthy)
 Run all code from the materials, and any code you add, in the sandbox (install missing Python packages with `uv pip install …` or `pip install …`). Download the sample datasets the sources use. Then:
 - Show genuine results in `pre.out` "real output" boxes. Never invent outputs.
 - Where it helps, run small **benchmarks** (same data, two tools; time and peak memory in fresh processes) and chart them, saying they're from the test machine.
 - When the materials contain a bug, an impossible value or an outdated detail, explain it in a `.warn` box with the tested fix.
 - If something can't run (no API key, paid service), say so and, if useful, rehearse with the real helper code plus a clearly labeled scripted stand-in.
 
-### 4. Find photos for the analogies
+### 5. Find photos for the analogies
 Read `references/metaphors.md`. Then:
 ```bash
 python3 "$SKILL_DIR/scripts/find_photos.py" search --out $WORK_DIR/photos \
@@ -67,12 +72,12 @@ python3 "$SKILL_DIR/scripts/find_photos.py" search --out $WORK_DIR/photos \
 # view $WORK_DIR/photos/sheet_<key>.jpg with the image viewer, choose the best index for each key
 python3 "$SKILL_DIR/scripts/find_photos.py" pick --out $WORK_DIR/photos danfo=0 injera=0
 ```
-`pick` writes `$WORK_DIR/photos/picked.json` (compressed data URIs plus credits). Use `photo_html(key, alt)` from the script, or the snippet in `references/components.md`, to place each photo in the single reading column **with its credit line**. Keep every photo as a centered block figure between paragraphs, using the same balanced left/right gutters as the text. Never place a photo next to or behind prose. Aim for 10–20 photos; skip any analogy where no good photo exists rather than using a poor match.
+`pick` writes `$WORK_DIR/photos/picked.json` (compressed data URIs plus credits). Use `photo_html(key, alt)` from the script, or the snippet in `references/components.md`, to place each photo in the single reading column **with its credit line**. Keep every photo as a centered block figure between paragraphs, using the same balanced left/right gutters as the text. Never place a photo next to or behind prose. Use a photo only when it clarifies a useful analogy or real-world object; there is no photo quota. Skip weak matches rather than using a poor image.
 
-### 5. Write the body in parts
-Read `references/components.md` for every snippet. Write 6–10 part files (`$WORK_DIR/<slug>/02.html …`) so no single write is huge. Required order: header (stacked hero + chapter nav including Glossary and References) → intro → Parts and chapters → plan → glossary → references → footer. Keep the full lesson in one centered reading column with visible, even left/right margins. Center prose blocks as well as figures so their edges line up. Put each diagram or photo on its own line within the explanation: introduce what readers should notice, show a large centered figure, then explain what it demonstrates and connect it to the next idea. Captions alone do not replace this explanation. Never use a tiny side-column image or place text and images side by side.
+### 6. Write the body in parts
+Read `references/components.md` for every snippet. Split long body content into manageable part files (`$WORK_DIR/<slug>/02.html …`); a short guide can use fewer. Use this reading order: header (stacked hero + navigation) → intro → connected sections → actionable plan when useful → focused glossary when useful → references → footer. Keep the full lesson in one centered reading column with visible, even left/right margins. Center prose blocks as well as figures so their edges line up. Put each diagram or photo on its own line within the explanation: introduce what readers should notice, show a large centered figure, then explain what it demonstrates and connect it to the next idea. Captions alone do not replace this explanation. Never use a tiny side-column image or place text and images side by side.
 
-### 6. Assemble, check, publish
+### 7. Assemble, check, publish
 ```bash
 python3 "$SKILL_DIR/scripts/assemble.py" --title "…" --description "…" --accent "#C27C0E" \
   --out $OUTPUT_DIR/<slug>.html $WORK_DIR/<slug>/02.html …
@@ -80,7 +85,7 @@ python3 "$SKILL_DIR/scripts/check_page.py" $OUTPUT_DIR/<slug>.html
 ```
 "Mobile overflow" should list nothing except `SPAN`s inside scrolling code blocks; fix anything else (usually `min-width:0` or a long unbroken string). View a few screenshot slices and fix clipped diagram labels. Publish with the Artifact tool if available (update the same artifact URL when revising), otherwise `present_files`.
 
-### 7. PDF copy (when asked, or offer it in one line)
+### 8. PDF export (only when explicitly requested)
 ```bash
 python3 "$SKILL_DIR/scripts/make_pdf.py" $OUTPUT_DIR/<slug>.html --title "Short running title"
 pdftoppm -r 40 -png $OUTPUT_DIR/<slug>.pdf $WORK_DIR/pp   # then view a few pages
@@ -88,6 +93,8 @@ pdftoppm -r 40 -png $OUTPUT_DIR/<slug>.pdf $WORK_DIR/pp   # then view a few page
 Headless Chromium prints the same single-column layout with `assets/print.css`: a cover, a Contents page, one chapter per page, unsplit boxes and diagrams, wrapped code, open quiz answers, and "Page X of Y" footers. If a diagram is too large on paper, adjust `print.css` and re-run. Deliver with `present_files`.
 
 ## Writing rules
+
+**Preserve the established HTML design system.** New lessons should look like the guides this skill already produces: reuse the bundled templates, CSS, palette, font choices, spacing, component styles, and diagram conventions. The teaching workflow changes the explanation and its sequence, not the visual identity. Do not replace the theme, introduce new fonts or colors, or invent a different diagram style unless the user explicitly asks for a design change. Read `references/components.md` and follow its existing components for any new figures or callouts.
 
 **Voice: a textbook for students, not a reply to the user.**
 - Never write "you shared", "you asked", "your question", "for you". Write "A common first question is…", "We tested…", "This guide…".
@@ -120,13 +127,13 @@ Headless Chromium prints the same single-column layout with `assets/print.css`: 
 **History** belongs in the foundations: when a topic has a past (SQL, spreadsheets, file formats, a framework), add a dated timeline with original diagrams and cite primary sources in References.
 
 **Every lesson ends with:**
-- **"Your step-by-step plan to do the same":** 10–14 ordered steps with `when` tags. State that it draws the sources together rather than quoting one of them.
-- **Glossary:** 25–60 terms.
-- **References:** grouped as History and concepts, Articles, Videos, Code, Software and documentation, News, Datasets, Photographs. Include year, title, venue and link where known.
+- **Action plan:** when useful, give ordered, practical steps with timing or "when" cues. Make clear that it synthesizes the sources rather than quoting one of them.
+- **Glossary:** include the key terms readers need for this guide; keep it proportional to the material.
+- **References:** cite the sources actually used, grouped by type when there are several. Include title, venue/date, direct link and useful anchors where available.
 
 ## Bundled files
 
-- `scripts/fetch_transcript.py`: YouTube → transcript text + metadata. Cycles yt-dlp player clients and subtitle tracks and backs off on HTTP 429; falls back to youtube-transcript-api.
+- `scripts/fetch_transcript.py`: YouTube → readable transcript, timestamped caption-cue sidecar, and metadata. Cycles yt-dlp player clients and subtitle tracks and backs off on HTTP 429; falls back to youtube-transcript-api.
 - `scripts/find_photos.py`: Openverse search → contact sheets → picked photos as data URIs with credits.
 - `scripts/assemble.py`: template + body parts → final HTML (derives the accent palette).
 - `scripts/check_page.py`: mobile overflow check + desktop/mobile screenshot slices.
@@ -134,3 +141,4 @@ Headless Chromium prints the same single-column layout with `assets/print.css`: 
 - `assets/template_head.html` / `assets/template_foot.html`: design system (light/dark, consistent fonts, justified single-column prose, centered block figures, code/output/warn/table/part/photo styles) and the lightweight scroll script.
 - `references/components.md`: every HTML snippet and the SVG diagram cookbook.
 - `references/metaphors.md`: metaphor rules, a bank of concept → metaphor mappings, and photo search terms.
+- `references/learning-design.md`: optional course mission and learning records for continuing study.
