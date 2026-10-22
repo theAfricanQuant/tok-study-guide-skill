@@ -1,5 +1,7 @@
 # tok-study-guide-skill
 
+The name **TOK** draws on the Berom verb *tɔk*, “to know; to understand; to know how to” (p. 162). It is a verb, not a noun meaning “knowledge” or “ability.” The dictionary separately lists *tɔk tsik* (“understanding”; p. 162, finderlist p. 243) and *tɔk ciwil* (“intelligence”; p. 162, finderlist p. 213). For “cleverness; skill; wisdom,” it lists *nèsisɛng* (p. 116), with *nètsitsɛng* as a synonym.
+
 An **agent skill** that turns learning materials (YouTube videos, PDFs, articles, slide decks and GitHub repos) into a long, beautiful, beginner-friendly **HTML lesson**, plus an optional **colorful PDF**.
 
 Lessons are written in simple 12th-grade English, like a textbook chapter, and include:
