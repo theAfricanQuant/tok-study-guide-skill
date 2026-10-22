@@ -13,8 +13,8 @@ Lessons are written in simple 12th-grade English, like a textbook chapter, and i
 - **Original SVG diagrams** that teach, with no logos or copyrighted characters.
 - **Single-column, fully justified writeups** with a centered prose column, balanced page margins, and large, centered diagrams explained alongside the surrounding text. Photos and diagrams never sit in side columns.
 - **Tested code** with genuine "real output" boxes, small benchmarks, and correction boxes when the source material has mistakes.
-- **A connected learning path** that moves from understanding to practice to judgment, with clear source anchors and transitions that explain how each material contributes.
-- **Short histories**, source-grounded examples, retrieval checks with feedback, an actionable plan, and focused glossary and References sections when they help.
+- **A connected learning path** that moves from explanation and worked examples to learner practice, feedback, retrieval, and transfer, with source anchors and tasks matched to the subject.
+- **Short histories**, source-grounded examples, retrieval checks with feedback, spaced next steps, an actionable plan, and focused glossary and References sections when they help.
 
 It works with **Claude Code**, the **Claude Agent SDK**, **Claude.ai**, and any agent that can read a `SKILL.md` file or an `AGENTS.md` pointer (Codex, Cursor, Gemini CLI, OpenCode, and others).
 
@@ -105,7 +105,7 @@ skill/tok-study-guide/
 └── references/
     ├── components.md        # every HTML building block + SVG diagram cookbook
     ├── metaphors.md         # metaphor rules, concept→metaphor bank, photo search terms
-    └── learning-design.md   # optional continuity records for multi-session courses
+    └── learning-design.md   # teaching loop and optional continuity records
 ```
 
 ## Where the agent saves things
