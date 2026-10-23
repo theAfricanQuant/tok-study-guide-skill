@@ -10,7 +10,7 @@ Turn whatever the user provides into one self-contained HTML lesson that a compl
 ## Paths and environment (read first)
 
 - **Skill directory (`$SKILL_DIR`)**: the folder containing this `SKILL.md`. All scripts are in `$SKILL_DIR/scripts/`. Run them from anywhere with the full path, e.g. `python3 "$SKILL_DIR/scripts/assemble.py" …` (or `uv run --no-project python …`).
-- **Output folder (`$OUTPUT_DIR`)**: where finished `.html` and `.pdf` files go. Default: `./lesson-output/` in the current project. In the Claude.ai sandbox use `/mnt/user-data/outputs/`.
+- **Output folder (`$OUTPUT_DIR`)**: where the finished `.html` lesson goes; `.pdf` is written here only when explicitly requested. Default: `./lesson-output/` in the current project. In the Claude.ai sandbox use `/mnt/user-data/outputs/`.
 - **Work folder (`$WORK_DIR`)**: scratch space for body parts, transcripts and photos. Default: `./lesson-work/`. In the Claude.ai sandbox use `/home/claude/` and `/tmp/`.
 - **Delivery**: if an Artifact/publish tool exists (Claude.ai), publish the HTML; else if `present_files` exists, present it; otherwise just save it to `$OUTPUT_DIR` and tell the user the path and to open it in a browser.
 - **Python to use**: if `$SKILL_DIR/.venv/bin/python` (Windows: `$SKILL_DIR\.venv\Scripts\python.exe`) exists, run every script with it instead of `python3`; it has all dependencies installed (created by `npx tok-study-guide-skill setup`).
@@ -20,7 +20,7 @@ Turn whatever the user provides into one self-contained HTML lesson that a compl
 
 | Material | How to get the content |
 |---|---|
-| YouTube link or ID | `scripts/fetch_transcript.py` (below). It saves readable transcript text plus a timestamped cue sidecar. If fetching fails, ask for a transcript or usable captions. |
+| YouTube link or ID | `scripts/fetch_transcript.py` (below). It saves readable transcript text plus a timestamped cue sidecar. On access blocks, follow the local-only cookie guidance below or ask for captions. |
 | PDF (article, paper, slides) | If its text is already in context, use it. Otherwise read the `pdf-reading` (or `file-reading`) skill and extract it from the uploads folder (Claude.ai: `/mnt/user-data/uploads/`). |
 | GitHub repo | `git clone --depth 1 <url> "$WORK_DIR/repo"`, then read the README, docs and main code files. |
 | Web article URL | `curl -sL -A "Mozilla/5.0" <url>` and strip tags; if blocked, ask for a PDF or paste. |
@@ -36,26 +36,31 @@ python3 "$SKILL_DIR/scripts/fetch_transcript.py" "<url>" --out "$WORK_DIR/<slug>
 ```
 For YouTube, the script writes readable transcript text, `<out>.timestamps.txt` (caption cues with time anchors), and `<out>.meta.json` (title, channel, URL). Use the readable transcript to understand the argument and the timestamp sidecar to locate and cite spoken moments. A transcript does not show what is on screen: inspect a relevant video moment or supplied frame when a visual matters, and never claim to have seen a visual you could not access.
 
+#### When YouTube blocks transcript access
+The fetcher tries several player clients, then an unauthenticated API fallback. If YouTube blocks the current runtime, ask for a transcript or captions. If the user explicitly chooses local browser authentication, use `--cookies-from-browser` only when this script is running on that user's trusted machine. A local `--cookies <file>` option is also available for a private cookie file. Never ask for or accept an uploaded, pasted, emailed, or committed logged-in cookie jar; these cookies grant account access. Do not access a browser profile without explicit user direction. Cookie values must never be logged or forwarded to the API fallback. Keep TLS certificate verification enabled; configure a trusted CA if the local network intercepts TLS.
+
 Read each source fully, using ~40,000-character chunks for long transcripts. Keep a compact **source ledger** as you read: assign each source an ID (`V1`, `P1`, `R1`), record its type/title/link, note its main ideas, and capture precise anchors. Use timestamps for videos, page numbers for PDFs, headings for articles, slide numbers for decks, and file/symbol/line or notebook section/cell for code. Mark conflicts or gaps instead of silently blending them. Correct caption-garbled names only when confident.
 
 Set a short **learning brief** from the request and source: what the learner should be able to do, what they likely know already, and any practical context. If prior knowledge is uncertain, open with a quick, low-stakes self-check and give the answer or feedback; do not make the whole guide depend on an unsupported assumption. Ask a question only when the missing context would materially change the lesson.
 
 ### 2. Design one connected learning path
-Choose the length and number of sections to fit the user's request and the material. Do not pad a short source to hit a chapter, quiz, analogy, or glossary quota. For a broad or technical subject, a useful path is:
-1. **Orient:** state the practical mission, why it matters, prerequisite ideas, and how the sources fit together.
-2. **Build knowledge:** explain the concepts in an order where each depends on what came before; define notation and terms before relying on them.
-3. **Practice a skill:** work a concrete example, calculation, code change, observation, or interpretation grounded in the source.
-4. **Use judgment:** explain what the result means, its assumptions and limits, when to use the idea, and how to recognize a case where it does not apply.
-5. **Connect and retrieve:** revisit the core chain of ideas, use short recall/application checks with clear feedback, and end with an actionable plan plus references and a focused glossary when they help.
+Before designing the lesson, read [references/learning-design.md](references/learning-design.md). Build its learning techniques into the explanation, practice, feedback and follow-up by default, selecting only those that fit the subject and goal. The learner does not need to see method-book names or citations unless they ask about the methods or those books are themselves part of the lesson. Use course files and progress records only when ongoing continuity is useful.
 
-Give each major section one clear learner outcome. Make transitions explicit: say what the current idea uses from the previous one and what it unlocks next. Explain why examples are concrete: readers can calculate, observe, run, compare, or decide something with them. If the sources disagree, show the disagreement and identify which source supports each account. Use an analogy only when it makes a specific relationship easier to picture; do not force one into every section. Draw diagrams selectively when they clarify a relationship that prose alone would make harder to see.
+Choose the length and number of sections to fit the user's request and the material. Give each guide one clear, practical finish line, then organize the necessary supporting ideas into a connected path. The guide can be long when the source warrants it; do not pad a short source to hit a chapter, quiz, analogy, or glossary quota. For a broad or technical subject, a useful path is:
+1. **Orient:** state the practical mission, why it matters, prerequisite ideas, and how the sources fit together. Set a few observable outcomes. If prior knowledge is uncertain, use a short, low-stakes check and give feedback.
+2. **Build knowledge:** explain concepts in an order where each depends on what came before; define notation and terms before relying on them.
+3. **Model and practice:** when the goal includes a procedure or performance, demonstrate a worked example and make the key decisions visible. Then give the learner a related task to solve or perform, reducing hints as they gain control.
+4. **Use judgment and transfer:** explain what the result means, its assumptions and limits, when the method fits, and how to recognize when it does not. Where useful, ask the learner to apply the idea to a new case or context.
+5. **Retrieve and plan:** when retrieval fits the outcome, use a short recall or application check on ideas already taught. Let the learner attempt it before feedback; make the feedback explain the reasoning and offer a specific correction or retry. End with an actionable next step, including a spaced return when it suits the goal, plus references and a focused glossary when they help.
+
+Give each major section one clear learner outcome. Make transitions explicit: say what the current idea uses from the previous one and what it unlocks next. Match examples and practice to what the learner needs to do: calculate, explain, code, interpret, speak, write, observe, decide, or perform. If the sources disagree, show the disagreement and identify which source supports each account. Use an analogy only when it makes a specific relationship easier to picture; do not force one into every section. Draw diagrams selectively when they clarify a relationship that prose alone would make harder to see.
 
 ### 3. Teach from evidence across media
 Use the source ledger while writing, not just when assembling References. Attach a source anchor close to each important claim, worked example, or interpretation. Link video citations to the exact YouTube time; cite PDF pages, article headings, slide numbers, or code/notebook locations as appropriate. A claim supported by several sources can cite several anchors. Keep source-derived claims distinct from your own explanation, calculations, and checks. Never invent a timestamp, page, cell, result, or visual detail.
 
 For a mixed-source lesson, give each source a job in the same learning path: for example, a video introduces the intuition, a notebook makes the calculation visible, and a paper explains the assumptions. Explain that connection at the point where it helps the learner. For YouTube, make citations clickable at the cue time by linking to the video's canonical URL with `&t=<seconds>s` (or `?t=` when there is no existing query), converting `HH:MM:SS` to seconds. If a transcript is available but its visual content is not, cite the spoken explanation and say that the visual could not be checked.
 
-For a continuing course or a user who wants future sessions to build on this one, read [references/learning-design.md](references/learning-design.md). Use its mission, source, and learning records only when ongoing continuity is useful; a one-off guide should stay self-contained.
+When a learner responds to an exercise in chat, assess the response they actually gave: name what is sound, correct the most important gap, and offer one suitable retry or next step. Adjust challenge from their demonstrated understanding. Use course files only when an ongoing sequence or useful prior-session evidence exists; base any progress record on actual responses or demonstrated task performance, not silence or merely completing a lesson.
 
 ### 4. Test everything you can (this is what makes the lesson trustworthy)
 Run all code from the materials, and any code you add, in the sandbox (install missing Python packages with `uv pip install …` or `pip install …`). Download the sample datasets the sources use. Then:
@@ -133,7 +138,7 @@ Headless Chromium prints the same single-column layout with `assets/print.css`: 
 
 ## Bundled files
 
-- `scripts/fetch_transcript.py`: YouTube → readable transcript, timestamped caption-cue sidecar, and metadata. Cycles yt-dlp player clients and subtitle tracks and backs off on HTTP 429; falls back to youtube-transcript-api.
+- `scripts/fetch_transcript.py`: YouTube → readable transcript, timestamped caption-cue sidecar, and metadata. Cycles player clients and subtitle tracks, supports explicit local cookie sources, keeps TLS verification enabled, and gives access-block guidance without asking for credentials.
 - `scripts/find_photos.py`: Openverse search → contact sheets → picked photos as data URIs with credits.
 - `scripts/assemble.py`: template + body parts → final HTML (derives the accent palette).
 - `scripts/check_page.py`: mobile overflow check + desktop/mobile screenshot slices.
@@ -141,4 +146,4 @@ Headless Chromium prints the same single-column layout with `assets/print.css`: 
 - `assets/template_head.html` / `assets/template_foot.html`: design system (light/dark, consistent fonts, justified single-column prose, centered block figures, code/output/warn/table/part/photo styles) and the lightweight scroll script.
 - `references/components.md`: every HTML snippet and the SVG diagram cookbook.
 - `references/metaphors.md`: metaphor rules, a bank of concept → metaphor mappings, and photo search terms.
-- `references/learning-design.md`: optional course mission and learning records for continuing study.
+- `references/learning-design.md`: teaching loop for every guide, subject-specific practice examples, memory supports, and optional course records for continuing study.
