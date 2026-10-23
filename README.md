@@ -13,8 +13,8 @@ Lessons are written in simple 12th-grade English, like a textbook chapter, and i
 - **Original SVG diagrams** that teach, with no logos or copyrighted characters.
 - **Single-column, fully justified writeups** with a centered prose column, balanced page margins, and large, centered diagrams explained alongside the surrounding text. Photos and diagrams never sit in side columns.
 - **Tested code** with genuine "real output" boxes, small benchmarks, and correction boxes when the source material has mistakes.
-- **A connected learning path** that moves from understanding to practice to judgment, with clear source anchors and transitions that explain how each material contributes.
-- **Short histories**, source-grounded examples, retrieval checks with feedback, an actionable plan, and focused glossary and References sections when they help.
+- **A connected learning path** that moves from explanation and worked examples to learner practice, feedback, retrieval, and transfer, with source anchors and tasks matched to the subject.
+- **Short histories**, source-grounded examples, retrieval checks with feedback, spaced next steps, an actionable plan, and focused glossary and References sections when they help.
 
 It works with **Claude Code**, the **Claude Agent SDK**, **Claude.ai**, and any agent that can read a `SKILL.md` file or an `AGENTS.md` pointer (Codex, Cursor, Gemini CLI, OpenCode, and others).
 
@@ -76,6 +76,8 @@ If your tool reads `CLAUDE.md` or another instructions file instead of `AGENTS.m
 - **Python 3.10+.** `setup` installs: `yt-dlp`, `curl_cffi`, `youtube-transcript-api`, `pillow`, `playwright`, `pypdf`
 - **Command-line tools:** `curl` and `git`; `pdftoppm` from poppler (recommended, for PDF page previews); `uv` (recommended)
 
+Windows users: We recommend using [WSL 2 with Ubuntu](https://learn.microsoft.com/en-us/windows/wsl/install) to install and run the skill. Install and use Node.js, Python, and `uv` inside WSL, and run the skill commands from the WSL shell so the tools share one Linux environment.
+
 Linux / WSL:
 ```bash
 sudo apt install curl git poppler-utils zip
@@ -86,6 +88,21 @@ macOS:
 brew install poppler uv
 ```
 
+## When YouTube blocks transcript access
+
+The transcript fetcher tries several player clients and then an unauthenticated API fallback. If YouTube blocks this runtime, the safest fallback is to run the fetcher on the user's own machine and provide the generated transcript, or provide captions directly.
+
+Browser cookies are bearer credentials that grant access to the signed-in account. **Never ask a user to upload, paste, email, or commit a logged-in cookie file.** Only use browser authentication when the user explicitly chooses it and the script is running on their trusted local machine. Prefer reading the local browser profile directly:
+
+```bash
+python3 skill/tok-study-guide/scripts/fetch_transcript.py "<url>" \
+  --cookies-from-browser chrome
+```
+
+A Netscape cookie file can contain session cookies for multiple sites. Prefer the browser-profile option; if you use a local cookie file, restrict it (`chmod 600 <cookie-file>` on Linux/macOS), delete it after use, and revoke the YouTube session if the file is disclosed. Cookie values are not logged. Choose either `--cookies` or `--cookies-from-browser`; do not use both. The unauthenticated API fallback does not receive browser cookies.
+
+On a network where the default client is blocked, alternate clients can be tried explicitly with `--player-client tv --player-client mweb`. The script always verifies TLS certificates. If a network intercepts TLS, configure its trusted CA rather than disabling certificate checks. For a trusted local automation environment, `YT_DLP_COOKIES`, `YT_DLP_COOKIES_FROM_BROWSER`, and `YT_DLP_PLAYER_CLIENT` can supply the corresponding options; never configure authenticated cookies in a hosted runtime.
+
 ## What's inside
 
 ```
@@ -93,7 +110,7 @@ skill/tok-study-guide/
 ├── SKILL.md                 # the workflow and writing rules the agent follows
 ├── requirements.txt         # Python packages for the scripts
 ├── scripts/
-│   ├── fetch_transcript.py  # YouTube → transcript + timestamp cues + metadata
+│   ├── fetch_transcript.py  # YouTube → transcript + timestamp cues; local auth options
 │   ├── find_photos.py       # Openverse search → contact sheets → embedded, credited photos
 │   ├── assemble.py          # template + body parts → one HTML file
 │   ├── check_page.py        # mobile-overflow check + screenshots
@@ -105,7 +122,7 @@ skill/tok-study-guide/
 └── references/
     ├── components.md        # every HTML building block + SVG diagram cookbook
     ├── metaphors.md         # metaphor rules, concept→metaphor bank, photo search terms
-    └── learning-design.md   # optional continuity records for multi-session courses
+    └── learning-design.md   # teaching loop and optional continuity records
 ```
 
 ## Where the agent saves things
@@ -125,6 +142,7 @@ The skill always saves the finished HTML lesson to `./lesson-output/` by default
 git clone https://github.com/theAfricanQuant/tok-study-guide-skill
 cd tok-study-guide-skill
 node bin/cli.js install --link --force   # edits in skill/ take effect immediately
+python3 -m unittest discover -s skill/tok-study-guide/tests -v
 npm test                                 # installs into ./.test-install and runs doctor
 npm run build:skill                      # dist/tok-study-guide.skill
 ```
