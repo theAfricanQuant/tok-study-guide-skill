@@ -76,6 +76,8 @@ If your tool reads `CLAUDE.md` or another instructions file instead of `AGENTS.m
 - **Python 3.10+.** `setup` installs: `yt-dlp`, `curl_cffi`, `youtube-transcript-api`, `pillow`, `playwright`, `pypdf`
 - **Command-line tools:** `curl` and `git`; `pdftoppm` from poppler (recommended, for PDF page previews); `uv` (recommended)
 
+Windows users: We recommend using [WSL 2 with Ubuntu](https://learn.microsoft.com/en-us/windows/wsl/install) to install and run the skill. Install and use Node.js, Python, and `uv` inside WSL, and run the skill commands from the WSL shell so the tools share one Linux environment.
+
 Linux / WSL:
 ```bash
 sudo apt install curl git poppler-utils zip
