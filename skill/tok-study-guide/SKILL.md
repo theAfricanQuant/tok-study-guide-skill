@@ -44,14 +44,24 @@ Read each source fully, using ~40,000-character chunks for long transcripts. Kee
 Set a short **learning brief** from the request and source: what the learner should be able to do, what they likely know already, and any practical context. If prior knowledge is uncertain, open with a quick, low-stakes self-check and give the answer or feedback; do not make the whole guide depend on an unsupported assumption. Ask a question only when the missing context would materially change the lesson.
 
 ### 2. Design one connected learning path
+<<<<<<< HEAD
+Before designing the lesson, read [references/learning-design.md](references/learning-design.md). Build its learning techniques into the explanation, practice, feedback and follow-up by default, selecting only those that fit the subject and goal. The learner does not need to see method-book names or citations unless they ask about the methods or those books are themselves part of the lesson. Use course files and progress records only when ongoing continuity is useful.
+
+Choose the length and number of sections to fit the user's request and the material. Give each guide one clear, practical finish line, then organize the necessary supporting ideas into a connected path. The guide can be long when the source warrants it; do not pad a short source to hit a chapter, quiz, analogy, or glossary quota. For a broad or technical subject, a useful path is:
+=======
 Before designing the lesson, read [references/learning-design.md](references/learning-design.md). Apply its teaching loop to every guide; use course files and progress records only when ongoing continuity is useful.
 
 Choose the length and number of sections to fit the user's request and the material. Do not pad a short source to hit a chapter, quiz, analogy, or glossary quota. For a broad or technical subject, a useful path is:
+>>>>>>> origin/main
 1. **Orient:** state the practical mission, why it matters, prerequisite ideas, and how the sources fit together. Set a few observable outcomes. If prior knowledge is uncertain, use a short, low-stakes check and give feedback.
 2. **Build knowledge:** explain concepts in an order where each depends on what came before; define notation and terms before relying on them.
 3. **Model and practice:** when the goal includes a procedure or performance, demonstrate a worked example and make the key decisions visible. Then give the learner a related task to solve or perform, reducing hints as they gain control.
 4. **Use judgment and transfer:** explain what the result means, its assumptions and limits, when the method fits, and how to recognize when it does not. Where useful, ask the learner to apply the idea to a new case or context.
+<<<<<<< HEAD
+5. **Retrieve and plan:** when retrieval fits the outcome, use a short recall or application check on ideas already taught. Let the learner attempt it before feedback; make the feedback explain the reasoning and offer a specific correction or retry. End with an actionable next step, including a spaced return when it suits the goal, plus references and a focused glossary when they help.
+=======
 5. **Retrieve and plan:** when retrieval fits the outcome, use a short recall or application check on ideas already taught. Let the learner attempt it before feedback, and invite a correction or retry when useful. End with an actionable next step, including a spaced return when it suits the goal, plus references and a focused glossary when they help.
+>>>>>>> origin/main
 
 Give each major section one clear learner outcome. Make transitions explicit: say what the current idea uses from the previous one and what it unlocks next. Match examples and practice to what the learner needs to do: calculate, explain, code, interpret, speak, write, observe, decide, or perform. If the sources disagree, show the disagreement and identify which source supports each account. Use an analogy only when it makes a specific relationship easier to picture; do not force one into every section. Draw diagrams selectively when they clarify a relationship that prose alone would make harder to see.
 
@@ -60,7 +70,11 @@ Use the source ledger while writing, not just when assembling References. Attach
 
 For a mixed-source lesson, give each source a job in the same learning path: for example, a video introduces the intuition, a notebook makes the calculation visible, and a paper explains the assumptions. Explain that connection at the point where it helps the learner. For YouTube, make citations clickable at the cue time by linking to the video's canonical URL with `&t=<seconds>s` (or `?t=` when there is no existing query), converting `HH:MM:SS` to seconds. If a transcript is available but its visual content is not, cite the spoken explanation and say that the visual could not be checked.
 
+<<<<<<< HEAD
+When a learner responds to an exercise in chat, assess the response they actually gave: name what is sound, correct the most important gap, and offer one suitable retry or next step. Adjust challenge from their demonstrated understanding. Use course files only when an ongoing sequence or useful prior-session evidence exists; base any progress record on actual responses or demonstrated task performance, not silence or merely completing a lesson.
+=======
 Use the learning-design reference's course files only when a learner wants an ongoing sequence or useful prior-session evidence exists. Base any progress record on the learner's actual responses or demonstrated task performance, not silence or merely completing a lesson.
+>>>>>>> origin/main
 
 ### 4. Test everything you can (this is what makes the lesson trustworthy)
 Run all code from the materials, and any code you add, in the sandbox (install missing Python packages with `uv pip install …` or `pip install …`). Download the sample datasets the sources use. Then:
