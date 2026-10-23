@@ -86,6 +86,21 @@ macOS:
 brew install poppler uv
 ```
 
+## When YouTube blocks transcript access
+
+The transcript fetcher tries several player clients and then an unauthenticated API fallback. If YouTube blocks this runtime, the safest fallback is to run the fetcher on the user's own machine and provide the generated transcript, or provide captions directly.
+
+Browser cookies are bearer credentials that grant access to the signed-in account. **Never ask a user to upload, paste, email, or commit a logged-in cookie file.** Only use browser authentication when the user explicitly chooses it and the script is running on their trusted local machine. Prefer reading the local browser profile directly:
+
+```bash
+python3 skill/tok-study-guide/scripts/fetch_transcript.py "<url>" \
+  --cookies-from-browser chrome
+```
+
+A Netscape cookie file can contain session cookies for multiple sites. Prefer the browser-profile option; if you use a local cookie file, restrict it (`chmod 600 <cookie-file>` on Linux/macOS), delete it after use, and revoke the YouTube session if the file is disclosed. Cookie values are not logged. Choose either `--cookies` or `--cookies-from-browser`; do not use both. The unauthenticated API fallback does not receive browser cookies.
+
+On a network where the default client is blocked, alternate clients can be tried explicitly with `--player-client tv --player-client mweb`. The script always verifies TLS certificates. If a network intercepts TLS, configure its trusted CA rather than disabling certificate checks. For a trusted local automation environment, `YT_DLP_COOKIES`, `YT_DLP_COOKIES_FROM_BROWSER`, and `YT_DLP_PLAYER_CLIENT` can supply the corresponding options; never configure authenticated cookies in a hosted runtime.
+
 ## What's inside
 
 ```
@@ -93,7 +108,7 @@ skill/tok-study-guide/
 ├── SKILL.md                 # the workflow and writing rules the agent follows
 ├── requirements.txt         # Python packages for the scripts
 ├── scripts/
-│   ├── fetch_transcript.py  # YouTube → transcript + timestamp cues + metadata
+│   ├── fetch_transcript.py  # YouTube → transcript + timestamp cues; local auth options
 │   ├── find_photos.py       # Openverse search → contact sheets → embedded, credited photos
 │   ├── assemble.py          # template + body parts → one HTML file
 │   ├── check_page.py        # mobile-overflow check + screenshots
@@ -125,6 +140,7 @@ The skill always saves the finished HTML lesson to `./lesson-output/` by default
 git clone https://github.com/theAfricanQuant/tok-study-guide-skill
 cd tok-study-guide-skill
 node bin/cli.js install --link --force   # edits in skill/ take effect immediately
+python3 -m unittest discover -s skill/tok-study-guide/tests -v
 npm test                                 # installs into ./.test-install and runs doctor
 npm run build:skill                      # dist/tok-study-guide.skill
 ```
