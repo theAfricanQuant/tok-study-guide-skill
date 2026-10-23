@@ -97,9 +97,9 @@ python3 skill/tok-study-guide/scripts/fetch_transcript.py "<url>" \
   --cookies-from-browser chrome
 ```
 
-If using a local Netscape cookie file instead, keep it private (`chmod 600 <cookie-file>`), do not expose it to a hosted runtime, and remove or revoke it if it is disclosed. Cookie values are not logged. Choose either `--cookies` or `--cookies-from-browser`; do not use both. The unauthenticated API fallback does not receive browser cookies.
+A Netscape cookie file can contain session cookies for multiple sites. Prefer the browser-profile option; if you use a local cookie file, restrict it (`chmod 600 <cookie-file>` on Linux/macOS), delete it after use, and revoke the YouTube session if the file is disclosed. Cookie values are not logged. Choose either `--cookies` or `--cookies-from-browser`; do not use both. The unauthenticated API fallback does not receive browser cookies.
 
-The script always verifies TLS certificates. If a network intercepts TLS, configure its trusted CA rather than disabling certificate checks. For a local automation environment, `YT_DLP_COOKIES`, `YT_DLP_COOKIES_FROM_BROWSER`, and `YT_DLP_PLAYER_CLIENT` can supply the corresponding options; keep these settings private.
+On a network where the default client is blocked, alternate clients can be tried explicitly with `--player-client tv --player-client mweb`. The script always verifies TLS certificates. If a network intercepts TLS, configure its trusted CA rather than disabling certificate checks. For a trusted local automation environment, `YT_DLP_COOKIES`, `YT_DLP_COOKIES_FROM_BROWSER`, and `YT_DLP_PLAYER_CLIENT` can supply the corresponding options; never configure authenticated cookies in a hosted runtime.
 
 ## What's inside
 
