@@ -25,6 +25,12 @@ Progression is criterion-based, not lesson-count-based. If evidence meets the ag
 
 A static HTML guide can provide answer keys, self-checks, rubrics, and a suggested progress-log format, but it cannot observe, grade, or track the learner by itself. Grade and record an attempt only when the learner supplies an answer, work sample, recording, or other usable evidence. Mark self-scoring in a page as a self-check, not as an agent-assigned grade.
 
+### Choose the interaction rhythm and consolidate
+
+Honor a learner’s request for **quiz-me** mode, explanation-first teaching, or a mix. In quiz-me mode, questions should build toward the stated finish line: give enough grounding for a fair first attempt, ask one meaningful question at a time, and respond to the learner’s actual answer. Explain the reason for a correction and choose a targeted retry or changed task only when the evidence calls for it. When the learner has demonstrated a subskill, move on instead of asking the same check again for reassurance. A sequence of short questions can be effective when it is building one connected idea; keep each exchange useful and make the overall path visible.
+
+At a natural checkpoint, let the learner choose whether to continue, switch style, or consolidate. If the learner explicitly says they are tired, exhausted, or ready to stop, end new practice and prepare a concise HTML review note in the project’s `lessons/` folder. Consolidate the concepts, a useful worked example, the learner’s demonstrated work, corrections that helped, open gaps, and the next step or spaced-return cue. Never infer exhaustion from silence, brevity, or an incorrect answer. Keep routine progress-file updates unobtrusive; surface a progress summary when it helps the learner decide what to do next.
+
 ## 1. Make a short learning map before drafting
 
 Create `$WORK_DIR/<slug>/learning-map.md` before writing the HTML parts. Keep it brief enough to guide the work. It is a planning aid, not part of the finished lesson.
