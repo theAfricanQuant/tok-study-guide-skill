@@ -4,21 +4,45 @@ The name **TOK** draws on the Berom verb *tɔk*, “to know; to understand; to k
 
 The Berom are an Indigenous people of Plateau State in north-central Nigeria, living mainly around the Jos Plateau, including Jos North, Jos South, Barkin Ladi, and Riyom ([Jos South LGA](https://jossouthlga.pl.gov.ng/ova_por/berom-art-and-culture-museum/)).
 
-An **agent skill** that turns learning materials (YouTube videos, PDFs, articles, slide decks and GitHub repos) into a long, beautiful, beginner-friendly **HTML lesson**. HTML is the default output. A PDF is created only when explicitly requested, and it accompanies the HTML lesson.
+An agent skill for two kinds of learning work:
 
-Lessons are written in simple 12th-grade English, like a textbook chapter, and include:
+1. **Understand material:** get a full chapter-by-chapter or section-by-section breakdown of a book, document, video, course, or other source.
+2. **Learn a topic or skill:** work toward a specific learning goal with teaching, focused practice, assessment, feedback, and progress records.
 
-- **Everyday Global South metaphors:** Nigerian first (danfo, okada, jollof, the POS agent), then wider Africa and Asia (boda boda, matatu, injera, ugali, matoke, banku, tuk-tuk), always naming both regional words.
-- **Openly licensed photos**, found through Openverse and credited under each image.
-- **Original SVG diagrams** that teach, with no logos or copyrighted characters.
-- **Single-column, fully justified writeups** with a centered prose column, balanced page margins, and large, centered diagrams explained alongside the surrounding text. Photos and diagrams never sit in side columns.
-- **Tested code** with genuine "real output" boxes, small benchmarks, and correction boxes when the source material has mistakes.
-- **A connected learning path** that moves from explanation and worked examples to learner practice, feedback, retrieval, and transfer, with source anchors and tasks matched to the subject.
-- **Short histories**, source-grounded examples, retrieval checks with feedback, spaced next steps, an actionable plan, and focused glossary and References sections when they help.
+The learner can choose either path or combine them. When they launch the skill, it identifies the path and asks whether they have materials to use. The skill creates a suitable project folder before work begins. A source breakdown follows the source; a goal-focused course follows the learner's target. If they ask for both, the relevant ideas in the source support practice toward the target.
+
+**Defaults:** clear Grade 12 English; chapter-by-chapter guides in HTML; metaphors only when requested; PDF only on request. In goal-focused learning, the learner can emphasize memorization, durable recall, performance, or a combination. The skill teaches interactively, assesses actual attempts against stated criteria, and records progress only from demonstrated learner work.
+
+For goal-focused learning, the skill does a focused deep-research pass to check key claims or standards and add useful models or missing context. It tells the learner when it is adding outside sources, cites them, and distinguishes them from the learner's material. A source-only breakdown stays with the supplied source unless an outside check is requested or needed to clarify a significant error, safety issue, or current fact.
 
 It works with **Claude Code**, the **Claude Agent SDK**, **Claude.ai**, and any agent that can read a `SKILL.md` file or an `AGENTS.md` pointer (Codex, Cursor, Gemini CLI, OpenCode, and others).
 
----
+### Example requests
+
+> Give me a full chapter-by-chapter breakdown of this book.
+
+> I want to learn German grocery conversations. I know some basic grammar. Help me remember useful forms and practise using them; assess my attempts against clear criteria.
+
+> Break down this video, then use its method to build and assess a practice plan for my presentation skills.
+
+### Project folders
+
+Each request gets a project under `./learning-projects/<slug>/` by default. The skill creates a source index and work folder, then adds folders for the selected path:
+
+```text
+learning-projects/<slug>/
+├── PROJECT.md
+├── sources/                 # source index and a place for materials
+├── work/                    # transcripts, notes, and planning maps
+├── breakdowns/              # when the source-breakdown path is used
+├── lessons/                 # when the goal-focused path is used
+├── practice/                # goal-focused attempts and feedback
+├── assessments/             # goal-focused criteria, rubrics, results
+├── progress/                # goal-focused dated learning evidence
+└── research/                # only when outside research is added
+```
+
+Only create folders needed for the selected path. The skill records the original locations of supplied files; it does not move or overwrite them. A source-only request usually needs `breakdowns/`; a goal-focused request needs `lessons/`, `practice/`, `assessments/`, and `progress/`. Goal-focused teaching proceeds in manageable steps: the agent teaches, waits for an attempt, grades against stated criteria, gives feedback, and updates progress before choosing the next step. A combined request uses both paths. See [`project-workflow.md`](skill/tok-study-guide/references/project-workflow.md) for the full intake and folder rules and [`learning-design.md`](skill/tok-study-guide/references/learning-design.md) for method choices, assessment, and progress tracking.
 
 ## Quick start
 
@@ -41,9 +65,13 @@ npx tok-study-guide-skill setup
 npx tok-study-guide-skill doctor
 ```
 
-Then ask your agent:
+Then try a request such as:
 
-> Make a beginner lesson from https://youtu.be/… and this PDF. Use Naija metaphors and make a PDF copy too.
+> Give me a full chapter-by-chapter breakdown of this book.
+
+Or:
+
+> I want to learn a specific skill. Ask what you need to know, set up a project folder, and help me practise and assess it.
 
 ## Install targets
 
@@ -121,18 +149,19 @@ skill/tok-study-guide/
 │   └── print.css            # cover, contents, one chapter per page
 └── references/
     ├── components.md        # every HTML building block + SVG diagram cookbook
-    ├── metaphors.md         # metaphor rules, concept→metaphor bank, photo search terms
-    └── learning-design.md   # teaching loop and optional continuity records
+    ├── metaphors.md         # optional metaphor guidance and examples
+    ├── project-workflow.md  # intake paths, project folders, and progress handoff
+    └── learning-design.md   # learning-method choices, teaching, assessment, and progress
 ```
 
 ## Where the agent saves things
 
-The skill always saves the finished HTML lesson to `./lesson-output/` by default and scratch files to `./lesson-work/`. It creates a PDF in the output folder only when explicitly requested. In the Claude.ai sandbox, outputs go to `/mnt/user-data/outputs/`. You can ask for a different folder in your prompt.
+The skill creates each learning project in `./learning-projects/<slug>/` by default and keeps work files under that project. HTML guides go in `breakdowns/` for source-led work or `lessons/` for goal-focused work. A PDF is added only when requested. Claude.ai projects default to `/mnt/user-data/outputs/learning-projects/<slug>/`. You can request a different folder.
 
 ## Responsible use
 
 - Lessons **paraphrase** video and article content and quote only short, attributed passages. Code from materials you supply is quoted with attribution.
-- Photos must be **openly licensed** and credited. News or magazine photos are linked, not embedded.
+- Photos are used only when they help explain the source or a learner-requested metaphor. Embedded photos must be **openly licensed** and credited; news or magazine photos are linked, not embedded.
 - Diagrams are **original**. No logos, brand marks or copyrighted characters are drawn.
 - YouTube sometimes rate-limits transcript downloads. The script retries several ways; if it still fails, provide a transcript or usable captions. Successful downloads include a timestamped cue sidecar for linking lessons to exact moments.
 

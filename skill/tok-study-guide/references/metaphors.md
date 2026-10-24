@@ -1,19 +1,16 @@
-# Metaphor bank: everyday life in Nigeria, Africa and the Global South
+# Optional metaphor bank: Nigeria, Africa, and the wider Global South
 
-Use these as starting points, not scripts. Invent new ones that fit the topic. Rules:
+This reference is an optional idea bank, not the default voice of the skill. Use it only when the learner asks for metaphors or a specific cultural setting. Follow the learner's requested style; otherwise prefer direct explanations, concrete examples, and diagrams. Never add a metaphor or photo quota. A source's own metaphor can be explained as part of its content.
 
-- **Default to Nigerian ("Naija") life**, then widen to other African and Global South settings.
-- **Name both regional words** so readers from different places recognize the thing:
-  okada (Nigeria) / boda boda (East Africa); danfo (Nigeria) / matatu (Kenya) / tro-tro (Ghana);
-  keke (Nigeria) / bajaj (East Africa) / tuk-tuk (Asia); eba or amala (Nigeria) / ugali (Kenya) /
-  posho (Uganda) / nsima (Malawi); POS agent (Nigeria) / mobile-money or M-Pesa agent (East Africa).
-- **One analogy per chapter at least**, labeled "Naija analogy: …", "Kenyan analogy: …",
-  "Okada (Nigeria) / boda boda (East Africa): …" etc. Pair with an openly licensed photo where one exists.
-- **Keep them respectful and everyday** (markets, transport, food, school, family, offices), never
-  poverty-as-joke or stereotypes. Don't use German, American or European metaphors unless asked.
-- **Each analogy must map cleanly**: say which part of the picture is which part of the concept.
+When a learner asks for a metaphor:
 
-## Concepts already mapped (from earlier lessons)
+- Choose a familiar, respectful example that fits the concept; do not assume a Nigerian, African, or Global South setting.
+- Name regional terms only when the learner's requested audience would benefit from them. For example: okada (Nigeria) / boda boda (East Africa); danfo (Nigeria) / matatu (Kenya) / tro-tro (Ghana); keke (Nigeria) / bajaj (East Africa) / tuk-tuk (Asia).
+- Map each part of the picture to the idea and state where the comparison stops being accurate.
+- Pair it with a photo only if the photo adds useful context and can be openly licensed and credited. A metaphor works without a photo.
+- Keep it respectful; avoid stereotypes or poverty-as-joke.
+
+## Optional examples from earlier lessons
 
 | Concept | Metaphor |
 |---|---|
@@ -48,9 +45,9 @@ Use these as starting points, not scripts. Invent new ones that fit the topic. R
 | Reconciling row counts | Counting rice bags when the luggage bus arrives |
 | Delegating tedious work, verifying | Apprentice does the hemming, master checks it |
 
-## Good photo search terms (Openverse)
+## Optional photo search terms (Openverse)
 
 danfo bus lagos · brt lagos · keke napep / tuk tuk · boda boda stand · matatu · mobile money agent ·
 bread seller · Wuse market · tomatoes market africa · shipping containers port · tailor sewing machine market ·
 jollof rice · injera · ugali sukuma wiki · matoke · banku tilapia · power strip · ring binder · provision shop.
-Openverse coverage of African scenes is patchy: try 2–3 phrasings, and skip the photo rather than use a poor match.
+Use these only when the learner requests this setting and a photo will clarify the metaphor; skip the photo rather than use a poor match.
