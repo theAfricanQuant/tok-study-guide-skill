@@ -164,10 +164,12 @@ Center the prose container and figure within the same reading column so their ma
 </div>
 ```
 
-## 6. Analogy box
+## 6. Optional analogy box
+
+Use only when the learner requests metaphors or an analogy is needed to clarify a specific relationship. Omit it when direct explanation works better.
 
 ```html
-<div class="analogy"><div class="icon">🚲</div><div><b>Analogy: [name]</b><p>[Everyday comparison a 17-year-old instantly gets.]</p></div></div>
+<div class="analogy"><div class="icon">🚲</div><div><b>Analogy: [name]</b><p>[Requested comparison; map its parts to the concept and name its limits.]</p></div></div>
 ```
 
 ## 7. Card grid

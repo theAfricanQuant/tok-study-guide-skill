@@ -1,8 +1,18 @@
 {
   "name": "tok-study-guide-skill",
   "version": "1.0.0",
-  "description": "An agent skill that turns YouTube videos, PDFs, articles and GitHub repos into beautiful, beginner-friendly HTML lessons (and colorful PDFs) with Global South metaphors, licensed photos, original diagrams and tested code.",
-  "keywords": ["agent-skill", "claude", "claude-code", "skills", "education", "study-guide", "lesson", "youtube", "pdf", "duckdb"],
+  "description": "An agent skill for chapter-by-chapter learning-material breakdowns and goal-focused learning with teaching, practice, assessment, and progress tracking.",
+  "keywords": [
+    "agent-skill",
+    "claude",
+    "claude-code",
+    "skills",
+    "education",
+    "study-guide",
+    "lesson",
+    "youtube",
+    "pdf"
+  ],
   "license": "MIT",
   "bin": {
     "tok-study-guide-skill": "bin/cli.js"

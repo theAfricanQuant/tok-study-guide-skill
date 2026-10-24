@@ -1,18 +1,21 @@
 ---
 name: tok-study-guide
-description: Turn learning materials (YouTube videos, PDFs, articles, slide decks, GitHub repos, transcripts) into a long, beautiful, beginner-friendly HTML lesson; create a PDF copy only when explicitly requested. Lessons use simple 12th-grade English, Nigerian and wider African / Global South metaphors (okada / boda boda, danfo / matatu, keke / tuk-tuk, jollof, injera, ugali), openly licensed photos, original SVG diagrams, tested code with real outputs, short histories, every story from the sources, a step-by-step plan, a glossary and a References section. Use this skill whenever the user shares videos, PDFs, links or repos and asks to "study this", "break it down", "explain this simply", "make a lesson / study guide / textbook chapter", "turn this into an HTML page or PDF", "do the same as before", or uploads earlier guides and asks for more like them.
+description: Help learners either understand supplied material through chapter-by-chapter HTML breakdowns or learn a chosen topic or skill through goal-focused teaching, practice, assessment, and progress tracking. On launch, identify the path and available materials. Use Grade 12 English by default; include metaphor styles only when requested. Use when someone asks to study, break down, learn, or practise a subject or skill.
 ---
 
-# Materials → HTML lesson (PDF only on request)
+# Learn from materials or build a skill
 
-Turn whatever the user provides into one self-contained HTML lesson that a complete beginner reads start to finish. Create a colorful PDF copy only when the user explicitly asks for one. Write the lesson like a good textbook chapter or blog post meant for students, not a reply to the user.
+This skill supports two paths: a chapter-by-chapter breakdown of material the learner introduces, and goal-focused learning for a topic or skill. The learner may choose either path or combine them. Use Grade 12 English by default, adjusting when requested. A source breakdown is normally a standalone HTML guide. Goal-focused learning is interactive by default. Follow the learner’s preferred rhythm: explanation-first (a concise model, then an attempt), quiz-me (scaffolded questions that build toward the goal), or mixed. If no preference is stated, give a concise explanation or worked example and then one purposeful attempt. Organize each chunk around a coherent learning outcome; do not turn every definition into a separate confirmation turn or repeat a check the learner has already passed. Assess actual attempts, give specific feedback, and adapt.
+
+When the learner says they are tired, exhausted, or ready to stop, pause new practice and consolidate the session in a concise HTML review note in `$PROJECT_DIR/lessons/`. Include the key ideas, useful worked examples, the learner’s demonstrated progress, corrections that mattered, remaining gaps, and a next step. Do not infer exhaustion from a short answer, mistake, or pause. Keep project-file bookkeeping quiet unless mentioning it helps the learner. Save other HTML lesson or practice materials when useful or requested. Create a PDF only when explicitly requested.
 
 ## Paths and environment (read first)
 
 - **Skill directory (`$SKILL_DIR`)**: the folder containing this `SKILL.md`. All scripts are in `$SKILL_DIR/scripts/`. Run them from anywhere with the full path, e.g. `python3 "$SKILL_DIR/scripts/assemble.py" …` (or `uv run --no-project python …`).
-- **Output folder (`$OUTPUT_DIR`)**: where the finished `.html` lesson goes; `.pdf` is written here only when explicitly requested. Default: `./lesson-output/` in the current project. In the Claude.ai sandbox use `/mnt/user-data/outputs/`.
-- **Work folder (`$WORK_DIR`)**: scratch space for body parts, transcripts and photos. Default: `./lesson-work/`. In the Claude.ai sandbox use `/home/claude/` and `/tmp/`.
-- **Delivery**: if an Artifact/publish tool exists (Claude.ai), publish the HTML; else if `present_files` exists, present it; otherwise just save it to `$OUTPUT_DIR` and tell the user the path and to open it in a browser.
+- **Project folder (`$PROJECT_DIR`)**: scaffold one learning project per topic or source request. Default: `./learning-projects/<slug>/` in the current project. In the Claude.ai sandbox use `/mnt/user-data/outputs/learning-projects/<slug>/`. Follow `references/project-workflow.md` for the minimal path-specific folders; never place a project inside the installed skill directory.
+- **Work folder (`$WORK_DIR`)**: scratch space for source extractions, maps, transcripts, and HTML parts. Default: `$PROJECT_DIR/work/`. Keep working files out of the published guide.
+- **Output folders (`$OUTPUT_DIR`)**: use `$PROJECT_DIR/breakdowns/` for source-led guides and `$PROJECT_DIR/lessons/` for saved goal-focused lesson materials. In a combined project, save each output to its matching folder. Create a requested PDF beside its HTML file.
+- **Delivery**: source breakdowns are normally delivered as HTML. For goal-focused learning, begin the interactive teach–attempt–feedback sequence in chat and save useful lesson or practice artifacts in the project. If an Artifact/publish tool exists, publish requested HTML; else if `present_files` exists, present it; otherwise save the artifact and tell the user its path.
 - **Python to use**: if `$SKILL_DIR/.venv/bin/python` (Windows: `$SKILL_DIR\.venv\Scripts\python.exe`) exists, run every script with it instead of `python3`; it has all dependencies installed (created by `npx tok-study-guide-skill setup`).
 - **Dependencies**: Python 3.10+, `yt-dlp`, `pillow`, `playwright` (+ Chromium), `curl`, `git`, and `pdftoppm` (poppler). If something is missing, run `npx tok-study-guide-skill doctor` (when installed via npm) or install it before starting.
 
@@ -26,15 +29,19 @@ Turn whatever the user provides into one self-contained HTML lesson that a compl
 | Web article URL | `curl -sL -A "Mozilla/5.0" <url>` and strip tags; if blocked, ask for a PDF or paste. |
 | Earlier guide (HTML) to "do the same" with | Pull its source links (`youtube.com/watch`, `youtu.be`, `github.com`) from the file, re-fetch the materials, and rebuild from scratch in this format. |
 
-When several materials are given, make **one combined lesson** that flows from basics to advanced, unless the user asks for separate guides.
+When several materials are given, assign each a clear role in the selected learning path. Combine them into one coherent breakdown or goal-focused course unless the learner asks for separate outputs.
 
 ## Workflow
 
-### 1. Gather sources and establish the learning goal
+### 1. Choose the learning path and scaffold the project
+At the start of a new request, identify whether the learner wants a full breakdown of material, to learn a particular topic or skill, or both, and whether they have material to include. If their request already makes the path clear, do not ask them to repeat it. Read [references/project-workflow.md](references/project-workflow.md), ask only the next questions needed for the chosen path, and create the project folders before beginning source extraction or teaching. In a goal-focused path, present a short route to the goal, then begin teaching the first manageable subskill in the interaction.
+
+### 2. Gather sources and establish the learning brief
+For a YouTube source, fetch its transcript into `$WORK_DIR`:
 ```bash
 python3 "$SKILL_DIR/scripts/fetch_transcript.py" "<url>" --out "$WORK_DIR/<slug>.txt"
 ```
-For YouTube, the script writes readable transcript text, `<out>.timestamps.txt` (caption cues with time anchors), and `<out>.meta.json` (title, channel, URL). Use the readable transcript to understand the argument and the timestamp sidecar to locate and cite spoken moments. A transcript does not show what is on screen: inspect a relevant video moment or supplied frame when a visual matters, and never claim to have seen a visual you could not access.
+The script writes readable transcript text, `<out>.timestamps.txt` (caption cues with time anchors), and `<out>.meta.json` (title, channel, URL). Use the transcript to understand the argument and the timestamp sidecar to locate and cite spoken moments. A transcript does not show what is on screen: inspect a relevant video moment or supplied frame when a visual matters, and never claim to have seen a visual you could not access.
 
 #### When YouTube blocks transcript access
 The fetcher tries several player clients, then an unauthenticated API fallback. If YouTube blocks the current runtime, ask for a transcript or captions. If the user explicitly chooses local browser authentication, use `--cookies-from-browser` only when this script is running on that user's trusted machine. A local `--cookies <file>` option is also available for a private cookie file. Never ask for or accept an uploaded, pasted, emailed, or committed logged-in cookie jar; these cookies grant account access. Do not access a browser profile without explicit user direction. Cookie values must never be logged or forwarded to the API fallback. Keep TLS certificate verification enabled; configure a trusted CA if the local network intercepts TLS.
@@ -43,60 +50,47 @@ Read each source fully, using ~40,000-character chunks for long transcripts. Kee
 
 Set a short **learning brief** from the request and source: what the learner should be able to do, what they likely know already, and any practical context. If prior knowledge is uncertain, open with a quick, low-stakes self-check and give the answer or feedback; do not make the whole guide depend on an unsupported assumption. Ask a question only when the missing context would materially change the lesson.
 
-### 2. Design one connected learning path
-<<<<<<< HEAD
-Before designing the lesson, read [references/learning-design.md](references/learning-design.md). Build its learning techniques into the explanation, practice, feedback and follow-up by default, selecting only those that fit the subject and goal. The learner does not need to see method-book names or citations unless they ask about the methods or those books are themselves part of the lesson. Use course files and progress records only when ongoing continuity is useful.
+### 3. Design the breakdown or learning path
+Before designing an output, read [references/learning-design.md](references/learning-design.md). It explains how to select memorization, durable-learning, practice, or combined methods and how to make teaching, testing, grading, and progress evidence fit the learner's goal. Choose practice from the learner's intended performance, not merely from whether the source is a PDF, video, article, slide deck, or code repository. If the goal includes several abilities, map each one to a suitable attempt and feedback method instead of forcing one generic exercise to cover them all. Before drafting, create `$WORK_DIR/learning-map.md` with the finish line, likely starting point, section sequence and links, chosen method cards with reasons, and where each choice will appear in the HTML. Keep this map in the work folder, not the published lesson. After assembly, review the finished page against it and remove any technique that is only decorative. This makes the design repeatable for another skill user without forcing method-book names into the lesson. Keep method-book names and citations out of the lesson unless requested or those books are lesson sources. Use course files and progress records only when ongoing continuity is useful.
 
-Choose the length and number of sections to fit the user's request and the material. Give each guide one clear, practical finish line, then organize the necessary supporting ideas into a connected path. The guide can be long when the source warrants it; do not pad a short source to hit a chapter, quiz, analogy, or glossary quota. For a broad or technical subject, a useful path is:
-=======
-Before designing the lesson, read [references/learning-design.md](references/learning-design.md). Apply its teaching loop to every guide; use course files and progress records only when ongoing continuity is useful.
-
-Choose the length and number of sections to fit the user's request and the material. Do not pad a short source to hit a chapter, quiz, analogy, or glossary quota. For a broad or technical subject, a useful path is:
->>>>>>> origin/main
+For a source-breakdown path, follow the material’s chapters or sections and preserve its structure. For a goal-focused path, organize the lesson around the learner’s observable finish line and the subskills needed to reach it. Choose the length and number of sections to fit the request and material. The guide can be long when the source warrants it; do not pad a short source to hit a chapter, quiz, analogy, or glossary quota. For a broad or technical subject, a useful path is:
 1. **Orient:** state the practical mission, why it matters, prerequisite ideas, and how the sources fit together. Set a few observable outcomes. If prior knowledge is uncertain, use a short, low-stakes check and give feedback.
 2. **Build knowledge:** explain concepts in an order where each depends on what came before; define notation and terms before relying on them.
 3. **Model and practice:** when the goal includes a procedure or performance, demonstrate a worked example and make the key decisions visible. Then give the learner a related task to solve or perform, reducing hints as they gain control.
 4. **Use judgment and transfer:** explain what the result means, its assumptions and limits, when the method fits, and how to recognize when it does not. Where useful, ask the learner to apply the idea to a new case or context.
-<<<<<<< HEAD
-5. **Retrieve and plan:** when retrieval fits the outcome, use a short recall or application check on ideas already taught. Let the learner attempt it before feedback; make the feedback explain the reasoning and offer a specific correction or retry. End with an actionable next step, including a spaced return when it suits the goal, plus references and a focused glossary when they help.
-=======
-5. **Retrieve and plan:** when retrieval fits the outcome, use a short recall or application check on ideas already taught. Let the learner attempt it before feedback, and invite a correction or retry when useful. End with an actionable next step, including a spaced return when it suits the goal, plus references and a focused glossary when they help.
->>>>>>> origin/main
+5. **Retrieve and plan:** when retrieval fits the outcome, use a short recall or application check on ideas already taught. Let the learner attempt it before feedback; explain the reasoning and offer a useful correction or retry. End with an actionable next step, including a spaced return when it suits the goal, plus references and a focused glossary when they help.
 
 Give each major section one clear learner outcome. Make transitions explicit: say what the current idea uses from the previous one and what it unlocks next. Match examples and practice to what the learner needs to do: calculate, explain, code, interpret, speak, write, observe, decide, or perform. If the sources disagree, show the disagreement and identify which source supports each account. Use an analogy only when it makes a specific relationship easier to picture; do not force one into every section. Draw diagrams selectively when they clarify a relationship that prose alone would make harder to see.
 
-### 3. Teach from evidence across media
-Use the source ledger while writing, not just when assembling References. Attach a source anchor close to each important claim, worked example, or interpretation. Link video citations to the exact YouTube time; cite PDF pages, article headings, slide numbers, or code/notebook locations as appropriate. A claim supported by several sources can cite several anchors. Keep source-derived claims distinct from your own explanation, calculations, and checks. Never invent a timestamp, page, cell, result, or visual detail.
+### 4. Teach from evidence across media
+Use the source ledger while writing or tutoring, not just when assembling References. Attach a source anchor close to each important claim, worked example, or interpretation. Link video citations to the exact YouTube time; cite PDF pages, article headings, slide numbers, or code/notebook locations as appropriate. A claim supported by several sources can cite several anchors. Keep source-derived claims distinct from your own explanation, calculations, and checks. Never invent a timestamp, page, cell, result, or visual detail.
 
 For a mixed-source lesson, give each source a job in the same learning path: for example, a video introduces the intuition, a notebook makes the calculation visible, and a paper explains the assumptions. Explain that connection at the point where it helps the learner. For YouTube, make citations clickable at the cue time by linking to the video's canonical URL with `&t=<seconds>s` (or `?t=` when there is no existing query), converting `HH:MM:SS` to seconds. If a transcript is available but its visual content is not, cite the spoken explanation and say that the visual could not be checked.
 
-<<<<<<< HEAD
-When a learner responds to an exercise in chat, assess the response they actually gave: name what is sound, correct the most important gap, and offer one suitable retry or next step. Adjust challenge from their demonstrated understanding. Use course files only when an ongoing sequence or useful prior-session evidence exists; base any progress record on actual responses or demonstrated task performance, not silence or merely completing a lesson.
-=======
-Use the learning-design reference's course files only when a learner wants an ongoing sequence or useful prior-session evidence exists. Base any progress record on the learner's actual responses or demonstrated task performance, not silence or merely completing a lesson.
->>>>>>> origin/main
+In goal-focused learning, teach a manageable chunk and elicit the learner’s attempt before giving the answer when they have enough grounding to try. Assess the response they actually gave against the stated criteria: identify what is sound, correct the most important gap, give a retry, and adapt the next challenge. Update the progress record from demonstrated work. Use course files only for useful continuity; never record silence or lesson completion as mastery.
 
-### 4. Test everything you can (this is what makes the lesson trustworthy)
+### 5. Verify claims, examples, and code
 Run all code from the materials, and any code you add, in the sandbox (install missing Python packages with `uv pip install …` or `pip install …`). Download the sample datasets the sources use. Then:
 - Show genuine results in `pre.out` "real output" boxes. Never invent outputs.
 - Where it helps, run small **benchmarks** (same data, two tools; time and peak memory in fresh processes) and chart them, saying they're from the test machine.
 - When the materials contain a bug, an impossible value or an outdated detail, explain it in a `.warn` box with the tested fix.
 - If something can't run (no API key, paid service), say so and, if useful, rehearse with the real helper code plus a clearly labeled scripted stand-in.
 
-### 5. Find photos for the analogies
-Read `references/metaphors.md`. Then:
+### 6. Use images selectively
+Metaphors are opt-in. If the learner requests a metaphor style, read `references/metaphors.md`; otherwise teach with direct explanations, worked examples, and diagrams where useful. Search for photos only when an explicitly requested metaphor or a real source object would be clearer with a photo. Then:
 ```bash
-python3 "$SKILL_DIR/scripts/find_photos.py" search --out $WORK_DIR/photos \
-  --q danfo="danfo bus lagos|lagos danfo" --q injera="injera|injera platter"
-# view $WORK_DIR/photos/sheet_<key>.jpg with the image viewer, choose the best index for each key
-python3 "$SKILL_DIR/scripts/find_photos.py" pick --out $WORK_DIR/photos danfo=0 injera=0
+python3 "$SKILL_DIR/scripts/find_photos.py" search --out "$WORK_DIR/photos" \
+  --q object="<requested object or setting>|<alternate wording>"
+# view the contact sheet and choose a useful, clearly licensed image
+python3 "$SKILL_DIR/scripts/find_photos.py" pick --out "$WORK_DIR/photos" object=0
 ```
 `pick` writes `$WORK_DIR/photos/picked.json` (compressed data URIs plus credits). Use `photo_html(key, alt)` from the script, or the snippet in `references/components.md`, to place each photo in the single reading column **with its credit line**. Keep every photo as a centered block figure between paragraphs, using the same balanced left/right gutters as the text. Never place a photo next to or behind prose. Use a photo only when it clarifies a useful analogy or real-world object; there is no photo quota. Skip weak matches rather than using a poor image.
 
-### 6. Write the body in parts
-Read `references/components.md` for every snippet. Split long body content into manageable part files (`$WORK_DIR/<slug>/02.html …`); a short guide can use fewer. Use this reading order: header (stacked hero + navigation) → intro → connected sections → actionable plan when useful → focused glossary when useful → references → footer. Keep the full lesson in one centered reading column with visible, even left/right margins. Center prose blocks as well as figures so their edges line up. Put each diagram or photo on its own line within the explanation: introduce what readers should notice, show a large centered figure, then explain what it demonstrates and connect it to the next idea. Captions alone do not replace this explanation. Never use a tiny side-column image or place text and images side by side.
+### 7. Write HTML artifacts when useful or requested
+A source-breakdown path normally produces an HTML guide. In a goal-focused path, continue teaching and assessing in the interaction; create an HTML reference or practice module only when it helps the learner or they request one. When preparing HTML, read `references/components.md` for every snippet. Split long body content into manageable part files (`$WORK_DIR/<slug>/02.html …`); a short guide can use fewer. Use this reading order: header (stacked hero + navigation) → intro → connected sections → actionable plan when useful → focused glossary when useful → references → footer. Keep the full lesson in one centered reading column with visible, even left/right margins. Center prose blocks as well as figures so their edges line up. Put each diagram or photo on its own line within the explanation: introduce what readers should notice, show a large centered figure, then explain what it demonstrates and connect it to the next idea. Captions alone do not replace this explanation. Never use a tiny side-column image or place text and images side by side.
 
-### 7. Assemble, check, publish
+### 8. Assemble, check, and publish HTML artifacts
+Use this step when a source-breakdown guide or requested/useful goal-focused HTML artifact is being produced.
 ```bash
 python3 "$SKILL_DIR/scripts/assemble.py" --title "…" --description "…" --accent "#C27C0E" \
   --out $OUTPUT_DIR/<slug>.html $WORK_DIR/<slug>/02.html …
@@ -104,7 +98,7 @@ python3 "$SKILL_DIR/scripts/check_page.py" $OUTPUT_DIR/<slug>.html
 ```
 "Mobile overflow" should list nothing except `SPAN`s inside scrolling code blocks; fix anything else (usually `min-width:0` or a long unbroken string). View a few screenshot slices and fix clipped diagram labels. Publish with the Artifact tool if available (update the same artifact URL when revising), otherwise `present_files`.
 
-### 8. PDF export (only when explicitly requested)
+### 9. PDF export (only when explicitly requested)
 ```bash
 python3 "$SKILL_DIR/scripts/make_pdf.py" $OUTPUT_DIR/<slug>.html --title "Short running title"
 pdftoppm -r 40 -png $OUTPUT_DIR/<slug>.pdf $WORK_DIR/pp   # then view a few pages
@@ -119,7 +113,7 @@ Headless Chromium prints the same single-column layout with `assets/print.css`: 
 - Never write "you shared", "you asked", "your question", "for you". Write "A common first question is…", "We tested…", "This guide…".
 - First person plural ("we built the same table…") for tests; otherwise neutral.
 - Mention the source authors by name only in the intro (one sentence) and the References. Elsewhere: "the article", "the first video", "the repo", "the creator".
-- Simple English for a curious 12th grader: short sentences, active voice. Define every technical term the first time (inline `term` tooltip) and again in the glossary, and help readers *picture* it (what a table looks like, what a row represents).
+- Clear English at about a Grade 12 level by default: short sentences, active voice. Define every technical term the first time (inline `term` tooltip) and again in the glossary, and help readers *picture* it (what a table looks like, what a row represents).
 
 **Page layout and typography**
 - Use a single, centered text column with visibly balanced left/right margins and a comfortable line length (about 42–46rem for prose on screen). Center the prose container itself; do not leave a narrow text block pinned to the left of a wider page. Keep the page background, spacing, and chapter rhythm calm and consistent.
@@ -128,7 +122,7 @@ Headless Chromium prints the same single-column layout with `assets/print.css`: 
 - Never put a photo, diagram, screenshot, or chart beside prose. Do not use floats, tiny side-column graphics, or a text-plus-image grid. Stack hero text and hero art vertically. Put every figure in the reading column as a centered block, at up to 100% of that column, with its caption directly below. Make diagrams broad enough to read at phone size; if labels would need to be shrunk, simplify or split the diagram instead.
 - Preserve the same one-column reading order on narrow screens and in A4 print. Prevent horizontal overflow; use the existing print margins.
 
-**Metaphors** come from Nigeria first and the wider Global South (see `references/metaphors.md`). Name both regional terms when they differ (okada / boda boda, danfo / matatu, keke / bajaj / tuk-tuk). No German, American or European metaphors unless the user asks.
+**Metaphors are opt-in.** Do not default to Naija, African, Global South, or other culture-specific metaphors. If the learner explicitly requests metaphors or a particular setting, follow that preference and use `references/metaphors.md` as an optional idea bank. Direct explanation, concrete examples, and diagrams remain the default.
 
 **Your own words, always.** Paraphrase video and article content. Short attributed quotes only. Never paste transcript passages, lyrics, book excerpts, or long periodical passages. Code and short excerpts from documents the user supplied may be quoted with attribution.
 
@@ -159,5 +153,6 @@ Headless Chromium prints the same single-column layout with `assets/print.css`: 
 - `scripts/make_pdf.py` + `assets/print.css`: colorful A4 PDF via headless Chromium.
 - `assets/template_head.html` / `assets/template_foot.html`: design system (light/dark, consistent fonts, justified single-column prose, centered block figures, code/output/warn/table/part/photo styles) and the lightweight scroll script.
 - `references/components.md`: every HTML snippet and the SVG diagram cookbook.
-- `references/metaphors.md`: metaphor rules, a bank of concept → metaphor mappings, and photo search terms.
-- `references/learning-design.md`: teaching loop for every guide, subject-specific practice examples, memory supports, and optional course records for continuing study.
+- `references/metaphors.md`: optional metaphor guidance and examples, used only when the learner asks for metaphors.
+- `references/project-workflow.md`: first-turn path selection, learner questions, project folders, and progress handoff.
+- `references/learning-design.md`: method choices, teaching and assessment loops, subject-specific practice, and progress evidence.
